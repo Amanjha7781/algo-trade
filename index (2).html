@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helios Algorithm — Systematic Trading Software for Gold, Indices, FX &amp; Crypto</title>
+<meta name="description" content="Helios Algorithm builds rule-based trading software for XAUUSD, US30, DE40, Bitcoin, forex, stocks and commodities. Licence any algo for $100/month or copy-trade with a 30% profit split and nothing upfront.">
+<meta name="theme-color" content="#0a0c10">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   HELIOS ALGORITHM — stylesheet
+   Palette: TradingView-style dark terminal
+   Type: Apple-style scale & spacing
+   Accent: Helios gold (XAUUSD house colour)
+   ============================================================ */
+
+:root{
+  --bg:#0a0c10;
+  --bg-2:#0e1116;
+  --panel:#12161d;
+  --panel-2:#161b23;
+  --panel-3:#1b212b;
+  --line:rgba(255,255,255,.075);
+  --line-2:rgba(255,255,255,.14);
+  --text:#f2f5f9;
+  --text-2:#aab3c0;
+  --text-3:#727d8d;
+  --gold:#f5b13d;
+  --gold-2:#ffd479;
+  --gold-deep:#8a5f13;
+  --up:#2bd98a;
+  --up-dim:rgba(43,217,138,.14);
+  --down:#ff5c6c;
+  --down-dim:rgba(255,92,108,.14);
+  --blue:#4c9dff;
+  --radius:14px;
+  --radius-sm:9px;
+  --radius-lg:22px;
+  --maxw:1180px;
+  --sans:"Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --shadow:0 24px 60px -22px rgba(0,0,0,.85);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.55;
+  letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select{font:inherit}
+::selection{background:rgba(245,177,61,.28);color:#fff}
+
+/* ---------- utilities ---------- */
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);display:inline-flex;align-items:center;gap:9px;margin:0 0 18px
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.eyebrow.no-rule::before{display:none}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.035em;line-height:1.08}
+h2{font-size:clamp(30px,4.1vw,46px)}
+h3{font-size:clamp(20px,2.3vw,25px);letter-spacing:-.028em}
+p{margin:0}
+.lead{font-size:clamp(16.5px,1.5vw,19px);color:var(--text-2);line-height:1.6;letter-spacing:-.012em}
+.muted{color:var(--text-3)}
+.tiny{font-size:12.5px;line-height:1.5;color:var(--text-3)}
+.gold-text{
+  background:linear-gradient(178deg,var(--gold-2) 8%,var(--gold) 52%,#d8912a 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+section{position:relative;padding:104px 0}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-head .lead{margin-top:18px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line-2) 22%,var(--line-2) 78%,transparent)}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  height:46px;padding:0 22px;border-radius:11px;font-size:14.5px;font-weight:600;
+  letter-spacing:-.01em;white-space:nowrap;position:relative;
+  transition:transform .18s var(--ease),box-shadow .25s var(--ease),background .2s var(--ease),border-color .2s var(--ease);
+}
+.btn:active{transform:translateY(1px) scale(.995)}
+.btn-gold{
+  color:#1a1206;background:linear-gradient(180deg,var(--gold-2),var(--gold) 58%,#e39c22);
+  box-shadow:0 10px 26px -12px rgba(245,177,61,.7),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn-gold:hover{box-shadow:0 16px 34px -12px rgba(245,177,61,.85),inset 0 1px 0 rgba(255,255,255,.6);transform:translateY(-1px)}
+.btn-ghost{border:1px solid var(--line-2);color:var(--text);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.055)}
+.btn-dark{background:var(--panel-3);border:1px solid var(--line-2);color:var(--text)}
+.btn-dark:hover{background:#222a36}
+.btn-sm{height:38px;padding:0 16px;font-size:13.5px;border-radius:9px}
+.btn-lg{height:54px;padding:0 30px;font-size:16px;border-radius:13px}
+.btn-block{width:100%}
+
+/* ---------- ticker ---------- */
+.ticker{
+  position:relative;z-index:60;height:40px;border-bottom:1px solid var(--line);
+  background:#07090c;overflow:hidden;display:flex;align-items:center
+}
+.ticker::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#07090c 0,transparent 6%,transparent 94%,#07090c 100%)
+}
+.ticker-track{display:flex;gap:0;animation:marquee 46s linear infinite;will-change:transform}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tick{
+  display:flex;align-items:center;gap:8px;padding:0 20px;height:40px;
+  border-right:1px solid var(--line);font-family:var(--mono);font-size:12px;white-space:nowrap
+}
+.tick .sym{color:var(--text-2);font-weight:600;letter-spacing:.02em}
+.tick .px{color:var(--text);font-weight:500}
+.tick .ch{font-weight:600;padding:1px 5px;border-radius:4px;font-size:11px}
+.tick .ch.up{color:var(--up);background:var(--up-dim)}
+.tick .ch.dn{color:var(--down);background:var(--down-dim)}
+.tick .px.flash-up{animation:fu .6s var(--ease)}
+.tick .px.flash-dn{animation:fd .6s var(--ease)}
+@keyframes fu{0%{color:var(--up)}100%{color:var(--text)}}
+@keyframes fd{0%{color:var(--down)}100%{color:var(--text)}}
+.ticker-note{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);z-index:2;
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--text-3);
+  background:#07090c;padding-left:14px;text-transform:uppercase
+}
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,12,16,.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;transition:border-color .3s,background .3s
+}
+.nav.stuck{border-bottom-color:var(--line);background:rgba(8,10,13,.86)}
+.nav-in{display:flex;align-items:center;gap:34px;height:66px}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;flex-shrink:0}
+.brand-mark{width:30px;height:30px;flex:0 0 30px}
+.brand-txt{display:flex;flex-direction:column;line-height:1}
+.brand-txt b{font-size:15.5px;font-weight:650;letter-spacing:-.02em}
+.brand-txt span{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--text-3);margin-top:4px;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  padding:8px 13px;border-radius:8px;font-size:14px;color:var(--text-2);font-weight:500;
+  transition:color .18s,background .18s;position:relative
+}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.nav-links a.active{color:var(--gold)}
+.nav-cta{display:flex;align-items:center;gap:10px}
+.burger{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--line-2);align-items:center;justify-content:center}
+.burger span{display:block;width:16px;height:1.5px;background:var(--text);position:relative;transition:.25s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:16px;height:1.5px;background:var(--text);transition:.25s}
+.burger span::before{top:-5px}.burger span::after{top:5px}
+body.menu-open .burger span{background:transparent}
+body.menu-open .burger span::before{top:0;transform:rotate(45deg)}
+body.menu-open .burger span::after{top:0;transform:rotate(-45deg)}
+.mobile-menu{
+  display:none;position:fixed;inset:106px 0 auto 0;z-index:49;background:rgba(9,11,15,.98);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);
+  padding:14px 24px 26px;transform:translateY(-12px);opacity:0;pointer-events:none;transition:.28s var(--ease)
+}
+body.menu-open .mobile-menu{transform:none;opacity:1;pointer-events:auto}
+.mobile-menu a{display:block;padding:14px 4px;border-bottom:1px solid var(--line);font-size:17px;font-weight:500}
+.mobile-menu .btn{margin-top:20px}
+
+/* ---------- hero ---------- */
+.hero{padding:88px 0 0;overflow:hidden;position:relative}
+.hero::before{
+  content:"";position:absolute;top:-320px;left:50%;transform:translateX(-50%);
+  width:1100px;height:760px;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 40%,rgba(245,177,61,.16),rgba(245,177,61,.05) 42%,transparent 68%);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.4;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000,transparent 72%);
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000,transparent 72%);
+}
+.hero-in{position:relative;z-index:2;text-align:center;max-width:900px;margin:0 auto}
+.pill{
+  display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 8px 0 15px;border-radius:999px;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.035);font-size:13px;color:var(--text-2);margin-bottom:30px
+}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 0 4px rgba(43,217,138,.16);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(43,217,138,.18)}50%{box-shadow:0 0 0 7px rgba(43,217,138,.04)}}
+.pill b{color:var(--text);font-weight:600}
+.pill .arrow{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:11px}
+h1.hero-title{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-.045em;font-weight:640}
+h1.hero-title .l2{display:block;margin-top:6px}
+.hero-sub{max-width:620px;margin:26px auto 0;font-size:clamp(16px,1.6vw,18.5px);color:var(--text-2);line-height:1.62}
+.hero-cta{display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.hero-fine{margin-top:20px;font-family:var(--mono);font-size:11.5px;color:var(--text-3);letter-spacing:.03em}
+
+/* hero chart */
+.chart-shell{position:relative;z-index:2;margin:70px auto 0;max-width:1120px}
+.chart-card{
+  border:1px solid var(--line);border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  background:linear-gradient(180deg,rgba(18,22,29,.9),rgba(10,12,16,.6));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);overflow:hidden;box-shadow:var(--shadow)
+}
+.chart-top{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.chart-sym{display:flex;align-items:center;gap:10px}
+.chart-sym .ic{width:26px;height:26px;border-radius:50%;background:linear-gradient(160deg,#ffe0a0,var(--gold));display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#3b2705}
+.chart-sym b{font-size:15px;letter-spacing:-.01em}
+.chart-sym span{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.chart-px{display:flex;align-items:baseline;gap:10px;margin-left:auto}
+.chart-px .p{font-family:var(--mono);font-size:22px;font-weight:600}
+.chart-px .c{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:2px 7px;border-radius:5px}
+.tf-group{display:flex;gap:2px;background:var(--panel-3);border-radius:8px;padding:3px}
+.tf-group button{
+  font-family:var(--mono);font-size:11.5px;padding:5px 11px;border-radius:6px;color:var(--text-3);
+  transition:.18s;font-weight:500
+}
+.tf-group button:hover{color:var(--text)}
+.tf-group button.on{background:rgba(255,255,255,.1);color:var(--text)}
+.chart-canvas{height:290px;position:relative}
+#heroChart{width:100%;height:100%;display:block}
+.chart-legend{
+  position:absolute;left:20px;top:16px;display:flex;gap:18px;font-family:var(--mono);font-size:11px;color:var(--text-3)
+}
+.chart-legend i{width:9px;height:2px;display:inline-block;margin-right:6px;vertical-align:middle;border-radius:2px}
+.chart-foot{
+  display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)
+}
+.chart-foot>div{padding:16px 20px;border-right:1px solid var(--line)}
+.chart-foot>div:last-child{border-right:0}
+.chart-foot .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;color:var(--text-3);text-transform:uppercase}
+.chart-foot .v{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:5px}
+
+/* ---------- stats band ---------- */
+.stats{padding:0}
+.stats-in{
+  display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--radius-lg);
+  background:var(--panel);overflow:hidden;margin-top:-1px
+}
+.stat{padding:34px 28px;border-right:1px solid var(--line);position:relative}
+.stat:last-child{border-right:0}
+.stat::after{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.stat:hover::after{opacity:.7}
+.stat .n{font-family:var(--mono);font-size:clamp(26px,3vw,36px);font-weight:600;letter-spacing:-.035em}
+.stat .l{font-size:13px;color:var(--text-3);margin-top:7px}
+
+/* ---------- bot tabs ---------- */
+.bots{background:linear-gradient(180deg,var(--bg) 0,var(--bg-2) 40%,var(--bg) 100%)}
+.tabs{
+  display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:7px;
+  overflow-x:auto;scrollbar-width:none;margin-bottom:34px
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:1 0 auto;min-width:150px;display:flex;align-items:center;gap:12px;padding:13px 17px;border-radius:11px;
+  text-align:left;transition:background .2s var(--ease),transform .2s var(--ease);position:relative
+}
+.tab:hover{background:rgba(255,255,255,.045)}
+.tab.on{background:var(--panel-3);box-shadow:inset 0 0 0 1px var(--line-2)}
+.tab-ic{
+  width:36px;height:36px;border-radius:10px;flex:0 0 36px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:-.03em;
+  background:rgba(255,255,255,.06);color:var(--text-2);transition:.25s
+}
+.tab.on .tab-ic{color:#2a1c04}
+.tab-tx{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.tab-tx b{font-size:14px;font-weight:600;letter-spacing:-.015em;white-space:nowrap}
+.tab-tx span{font-family:var(--mono);font-size:10.5px;color:var(--text-3);margin-top:3px;letter-spacing:.04em}
+.tab .flag{
+  position:absolute;top:-7px;right:-4px;font-family:var(--mono);font-size:9px;letter-spacing:.09em;
+  padding:3px 7px;border-radius:999px;text-transform:uppercase;font-weight:600
+}
+.flag.hot{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#2a1c04}
+.flag.gem{background:rgba(76,157,255,.18);color:#8dc2ff;border:1px solid rgba(76,157,255,.35)}
+
+.panel-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start}
+.pane{display:none;animation:fade .45s var(--ease)}
+.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.card{
+  border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);overflow:hidden
+}
+.card-head{padding:26px 28px 22px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.card-head .glow{position:absolute;right:-70px;top:-90px;width:280px;height:280px;border-radius:50%;pointer-events:none;filter:blur(4px)}
+.bot-name{font-size:clamp(24px,2.6vw,30px);letter-spacing:-.032em;position:relative}
+.bot-tag{
+  display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:14px;position:relative
+}
+.bot-desc{color:var(--text-2);font-size:15.5px;line-height:1.62;margin-top:14px;position:relative;max-width:56ch}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;position:relative}
+.badge{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:5px 10px;border-radius:7px;
+  border:1px solid var(--line-2);color:var(--text-2);background:rgba(255,255,255,.03);text-transform:uppercase
+}
+.spec-body{padding:6px 0}
+.spec-row{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 28px;
+  border-bottom:1px solid var(--line);transition:background .18s
+}
+.spec-row:last-child{border-bottom:0}
+.spec-row:hover{background:rgba(255,255,255,.022)}
+.spec-row .k{font-size:13.5px;color:var(--text-3)}
+.spec-row .v{font-family:var(--mono);font-size:13.5px;font-weight:500;text-align:right;color:var(--text)}
+.spec-row .v.good{color:var(--up)}
+
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.metric{background:var(--panel);padding:22px 20px}
+.metric .k{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--text-3)}
+.metric .v{font-family:var(--mono);font-size:23px;font-weight:600;margin-top:8px;letter-spacing:-.03em}
+.metric .s{font-size:11.5px;color:var(--text-3);margin-top:3px;font-family:var(--mono)}
+
+.equity{padding:24px 28px 8px}
+.equity-top{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:6px}
+.equity-top b{font-size:14px;letter-spacing:-.01em}
+.equity-top span{font-family:var(--mono);font-size:11.5px;color:var(--text-3)}
+.spark{width:100%;height:132px}
+.equity-axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--text-3);padding:6px 28px 22px}
+
+.pane-side{display:flex;flex-direction:column;gap:26px}
+.note{padding:22px 24px;display:flex;gap:14px;align-items:flex-start}
+.note svg{flex:0 0 18px;margin-top:2px}
+.note b{display:block;font-size:13.5px;margin-bottom:5px}
+.note p{font-size:13px;color:var(--text-3);line-height:1.55}
+.pane-actions{padding:22px 28px 26px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.price-chip{
+  margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--text-3);display:flex;align-items:center;gap:6px
+}
+.price-chip b{color:var(--gold);font-size:15px}
+
+/* ---------- pricing ---------- */
+.pricing{background:var(--bg-2)}
+.toggle-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:44px;flex-wrap:wrap}
+.toggle{
+  display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px
+}
+.toggle button{
+  padding:9px 20px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--text-3);transition:.22s var(--ease)
+}
+.toggle button.on{background:var(--panel-3);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.save-tag{font-family:var(--mono);font-size:11px;color:var(--up);background:var(--up-dim);padding:4px 9px;border-radius:6px}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.plan{
+  border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);
+  padding:34px 32px 32px;position:relative;transition:transform .3s var(--ease),border-color .3s,box-shadow .3s
+}
+.plan:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.plan.featured{
+  border-color:rgba(245,177,61,.42);
+  background:linear-gradient(180deg,rgba(245,177,61,.07),rgba(18,22,29,.4) 42%),var(--panel);
+  box-shadow:0 30px 70px -30px rgba(245,177,61,.35)
+}
+.plan.featured:hover{box-shadow:0 36px 80px -30px rgba(245,177,61,.45)}
+.ribbon{
+  position:absolute;top:-13px;left:32px;display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#2a1c04;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;box-shadow:0 8px 20px -8px rgba(245,177,61,.8)
+}
+.plan-k{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
+.plan h3{font-size:26px;margin-top:12px;letter-spacing:-.03em}
+.plan-desc{color:var(--text-2);font-size:14.5px;margin-top:10px;line-height:1.6;min-height:46px}
+.price{display:flex;align-items:flex-end;gap:8px;margin:26px 0 4px}
+.price .amt{font-family:var(--mono);font-size:52px;font-weight:600;letter-spacing:-.05em;line-height:.9}
+.price .per{font-size:14px;color:var(--text-3);padding-bottom:6px}
+.price-sub{font-family:var(--mono);font-size:12px;color:var(--text-3);min-height:18px}
+.plan .btn{margin-top:26px}
+.feats{list-style:none;margin:26px 0 0;padding:24px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:13px}
+.feats li{display:flex;gap:11px;font-size:14.2px;color:var(--text-2);line-height:1.5}
+.feats li svg{flex:0 0 17px;margin-top:2.5px}
+.feats li b{color:var(--text);font-weight:600}
+.feats li.no{color:var(--text-3)}
+.plan-foot{margin-top:24px;font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:.02em}
+
+/* split calculator */
+.calc{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);overflow:hidden}
+.calc-head{padding:26px 28px;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.calc-head h3{font-size:19px}
+.calc-head p{font-size:13.5px;color:var(--text-3);margin-top:6px;max-width:62ch}
+.calc-body{display:grid;grid-template-columns:.9fr 1.1fr;gap:0}
+.calc-in{padding:28px;border-right:1px solid var(--line)}
+.field{margin-bottom:22px}
+.field label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:9px}
+.field label b{color:var(--gold);font-size:12.5px;letter-spacing:0}
+.input-shell{position:relative}
+.input-shell span{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-family:var(--mono);color:var(--text-3);font-size:15px}
+input[type=number],input[type=text],input[type=email],select,textarea{
+  width:100%;height:50px;background:var(--bg);border:1px solid var(--line-2);border-radius:11px;
+  color:var(--text);padding:0 15px 0 34px;font-family:var(--mono);font-size:16px;outline:none;
+  transition:border-color .2s,box-shadow .2s
+}
+input:focus,select:focus,textarea:focus{border-color:rgba(245,177,61,.55);box-shadow:0 0 0 3px rgba(245,177,61,.1)}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.range{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:var(--panel-3);outline:none;margin:16px 0 0;padding:0;border:0}
+.range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;cursor:grab;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));border:2px solid #0a0c10;
+  box-shadow:0 3px 10px rgba(0,0,0,.6)
+}
+.range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);border:2px solid #0a0c10;cursor:grab}
+.calc-out{padding:28px}
+.split-bar{display:flex;height:46px;border-radius:11px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.split-bar div{display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:600;transition:width .45s var(--ease)}
+.split-you{background:linear-gradient(180deg,rgba(43,217,138,.28),rgba(43,217,138,.14));color:var(--up)}
+.split-us{background:linear-gradient(180deg,rgba(245,177,61,.28),rgba(245,177,61,.12));color:var(--gold-2)}
+.calc-rows{margin-top:22px;border-top:1px solid var(--line)}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.calc-row .k{font-size:13.5px;color:var(--text-3)}
+.calc-row .v{font-family:var(--mono);font-size:16px;font-weight:600}
+.calc-row.total .k{color:var(--text);font-weight:600;font-size:14.5px}
+.calc-row.total .v{color:var(--up);font-size:22px}
+.calc-row.total{border-bottom:0;padding-bottom:4px}
+.hwm{margin-top:16px;font-size:12px;color:var(--text-3);line-height:1.55;display:flex;gap:9px}
+.hwm svg{flex:0 0 15px;margin-top:2px}
+
+/* ---------- how it works ---------- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--panel)}
+.step{padding:32px 26px;border-right:1px solid var(--line);position:relative;transition:background .25s}
+.step:last-child{border-right:0}
+.step:hover{background:var(--panel-2)}
+.step .num{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--gold);margin-bottom:20px}
+.step h4{font-size:16.5px;letter-spacing:-.02em;margin-bottom:10px}
+.step p{font-size:13.5px;color:var(--text-3);line-height:1.6}
+.step::after{
+  content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--gold);transition:width .4s var(--ease)
+}
+.step:hover::after{width:100%}
+
+/* ---------- reviews ---------- */
+.reviews{background:linear-gradient(180deg,var(--bg) 0,var(--bg-2) 100%)}
+.rev-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:44px}
+.rev-summary{display:flex;align-items:center;gap:24px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);padding:22px 26px}
+.rev-score{text-align:center}
+.rev-score .n{font-family:var(--mono);font-size:46px;font-weight:600;letter-spacing:-.05em;line-height:1}
+.stars{display:flex;gap:2px}
+.stars svg{width:15px;height:15px}
+.rev-score .c{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:7px}
+.bars{display:flex;flex-direction:column;gap:6px;min-width:180px}
+.bar-row{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.bar-row .track{flex:1;height:5px;border-radius:5px;background:var(--panel-3);overflow:hidden}
+.bar-row .fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold-deep),var(--gold));width:0;transition:width 1.1s var(--ease)}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.rev{
+  border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);padding:24px 24px 20px;
+  display:flex;flex-direction:column;gap:14px;transition:transform .3s var(--ease),border-color .3s,background .3s
+}
+.rev:hover{transform:translateY(-4px);border-color:var(--line-2);background:var(--panel-2)}
+.rev-top{display:flex;gap:12px;align-items:center}
+.av{
+  width:40px;height:40px;border-radius:50%;flex:0 0 40px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:13px;font-weight:600;color:#0a0c10
+}
+.rev-who b{display:block;font-size:14.2px;letter-spacing:-.01em}
+.rev-who span{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:2px;display:block}
+.verified{
+  margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.09em;color:var(--up);background:var(--up-dim);padding:4px 8px;border-radius:999px;text-transform:uppercase;flex-shrink:0
+}
+.rev p{font-size:14.2px;color:var(--text-2);line-height:1.63}
+.rev-meta{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)
+}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:4px 9px;border-radius:6px;
+  border:1px solid var(--line-2);color:var(--text-3);background:rgba(255,255,255,.02)
+}
+.chip b{color:var(--text-2);font-weight:600}
+.chip.gold{border-color:rgba(245,177,61,.3);color:var(--gold-2);background:rgba(245,177,61,.07)}
+.rev-nav{display:flex;gap:9px;align-items:center;margin-top:30px;justify-content:center}
+.rnav-btn{
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;
+  transition:.2s;background:var(--panel)
+}
+.rnav-btn:hover{background:var(--panel-3);border-color:rgba(255,255,255,.3)}
+.rev-dots{display:flex;gap:6px;margin:0 10px}
+.rev-dots i{width:6px;height:6px;border-radius:50%;background:var(--line-2);transition:.25s;cursor:pointer}
+.rev-dots i.on{background:var(--gold);width:20px;border-radius:4px}
+.disclaim{margin-top:26px;font-size:12px;color:var(--text-3);line-height:1.6;max-width:86ch}
+
+/* ---------- faq ---------- */
+.faq-list{border-top:1px solid var(--line)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 4px;
+  text-align:left;font-size:16.5px;font-weight:550;letter-spacing:-.018em;transition:color .2s
+}
+.faq-q:hover{color:var(--gold)}
+.faq-ic{
+  width:28px;height:28px;flex:0 0 28px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;
+  position:relative;transition:.3s var(--ease)
+}
+.faq-ic::before,.faq-ic::after{content:"";position:absolute;background:var(--text-2);border-radius:2px;transition:.3s var(--ease)}
+.faq-ic::before{width:11px;height:1.5px}
+.faq-ic::after{width:1.5px;height:11px}
+.faq-item.open .faq-ic{background:var(--gold);border-color:var(--gold);transform:rotate(180deg)}
+.faq-item.open .faq-ic::before,.faq-item.open .faq-ic::after{background:#2a1c04}
+.faq-item.open .faq-ic::after{height:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .42s var(--ease)}
+.faq-a div{padding:0 60px 26px 4px;color:var(--text-2);font-size:14.8px;line-height:1.68}
+.faq-a b{color:var(--text);font-weight:600}
+
+/* ---------- contact ---------- */
+.contact{background:var(--bg-2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+.channels{display:flex;flex-direction:column;gap:12px;margin-top:34px}
+.chan{
+  display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);transition:.25s var(--ease)
+}
+.chan:hover{border-color:var(--line-2);transform:translateX(4px);background:var(--panel-2)}
+.chan-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:0 0 40px}
+.chan b{display:block;font-size:14.5px;letter-spacing:-.01em}
+.chan span{font-family:var(--mono);font-size:11.5px;color:var(--text-3);margin-top:2px;display:block}
+.chan .go{margin-left:auto;color:var(--text-3);transition:.25s}
+.chan:hover .go{color:var(--gold);transform:translateX(3px)}
+.form{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);padding:32px}
+.form h3{font-size:20px;margin-bottom:6px}
+.form>p{font-size:13.5px;color:var(--text-3);margin-bottom:26px}
+.form .field label{padding:0}
+.form input,.form select,.form textarea{padding-left:15px;height:48px;font-family:var(--sans);font-size:14.5px}
+.form textarea{height:110px;padding-top:13px;resize:vertical;line-height:1.55}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form .btn{margin-top:8px}
+.form-note{margin-top:14px;font-size:11.5px;color:var(--text-3);line-height:1.5}
+.toast{
+  position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);z-index:90;opacity:0;pointer-events:none;
+  background:var(--panel-3);border:1px solid var(--line-2);border-radius:12px;padding:13px 20px;font-size:13.5px;
+  box-shadow:var(--shadow);transition:.35s var(--ease);display:flex;align-items:center;gap:10px
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .dot{width:7px;height:7px;border-radius:50%;background:var(--up)}
+
+/* ---------- cta band ---------- */
+.cta-band{padding:0 0 104px}
+.cta-in{
+  border:1px solid rgba(245,177,61,.28);border-radius:var(--radius-lg);padding:64px 48px;text-align:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 70% 120% at 50% 0%,rgba(245,177,61,.16),transparent 62%),var(--panel)
+}
+.cta-in h2{font-size:clamp(28px,3.6vw,42px)}
+.cta-in .lead{max-width:560px;margin:18px auto 0}
+.cta-in .hero-cta{margin-top:32px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);background:#07090c;padding:64px 0 34px}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}
+.foot-brand p{font-size:13.5px;color:var(--text-3);line-height:1.65;margin-top:18px;max-width:38ch}
+.foot-col h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-3);margin:0 0 16px;font-weight:500}
+.foot-col a{display:block;font-size:13.8px;color:var(--text-2);padding:6px 0;transition:color .18s}
+.foot-col a:hover{color:var(--gold)}
+.risk{
+  margin-top:52px;padding:24px 26px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,92,108,.045)
+}
+.risk h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--down);margin:0 0 12px;font-weight:600}
+.risk p{font-size:12.2px;color:var(--text-3);line-height:1.7;margin-bottom:9px}
+.risk p:last-child{margin-bottom:0}
+.foot-bot{
+  margin-top:36px;padding-top:26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;
+  gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--text-3)
+}
+.foot-bot .links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-bot a:hover{color:var(--text-2)}
+
+/* ---------- misc / reveal ---------- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+.top-btn{
+  position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;z-index:45;
+  background:var(--panel-3);border:1px solid var(--line-2);display:grid;place-items:center;
+  opacity:0;pointer-events:none;transform:translateY(10px);transition:.3s var(--ease);box-shadow:var(--shadow)
+}
+.top-btn.show{opacity:1;pointer-events:auto;transform:none}
+.top-btn:hover{background:#252e3b}
+
+
+/* ---------- brokers ---------- */
+.brokers-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:24px;align-items:stretch}
+.broker{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel);padding:32px;position:relative;display:flex;flex-direction:column;transition:transform .3s var(--ease),border-color .3s}
+.broker:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.broker.top{border-color:rgba(245,177,61,.45);background:linear-gradient(160deg,rgba(245,177,61,.09),rgba(18,22,29,.3) 45%),var(--panel);box-shadow:0 30px 70px -32px rgba(245,177,61,.4)}
+.broker-head{display:flex;align-items:center;gap:14px}
+.broker-logo{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:16px;letter-spacing:-.03em;flex:0 0 52px}
+.broker-head h3{font-size:23px}
+.broker-head .rank{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-top:5px}
+.broker.top .rank{color:var(--gold)}
+.broker-why{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+.broker-why li{display:flex;gap:10px;font-size:14.2px;color:var(--text-2);line-height:1.5}
+.broker-why li svg{flex:0 0 16px;margin-top:3px}
+.broker-steps{display:flex;align-items:center;gap:10px;margin:26px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--text-3);flex-wrap:wrap}
+.broker-steps span{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--line-2);border-radius:999px;color:var(--text-2)}
+.broker-steps span i{font-style:normal;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:rgba(245,177,61,.16);color:var(--gold-2);font-size:10px}
+.ref{margin-top:22px;display:flex;align-items:center;gap:12px;border:1px dashed var(--line-2);border-radius:12px;padding:12px 12px 12px 16px;background:rgba(0,0,0,.25)}
+.ref .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.ref .code{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:.04em;margin-top:2px}
+.ref button{margin-left:auto;height:36px;padding:0 14px;border-radius:9px;background:var(--panel-3);border:1px solid var(--line-2);font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.2s}
+.ref button:hover{background:#252e3b}
+.ref button.done{color:var(--up);border-color:rgba(43,217,138,.4)}
+.broker-actions{display:flex;gap:10px;margin-top:auto;padding-top:24px;flex-wrap:wrap}
+.broker-actions .btn{flex:1}
+.broker-note{margin-top:22px;font-size:12px;color:var(--text-3);line-height:1.6}
+
+/* ---------- small accounts ---------- */
+.small{margin-top:26px;border:1px solid rgba(43,217,138,.28);border-radius:var(--radius-lg);background:linear-gradient(120deg,rgba(43,217,138,.08),rgba(18,22,29,.2) 50%),var(--panel);padding:30px 32px;display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:30px;align-items:center}
+.small h3{font-size:22px}
+.small h3 em{font-style:normal;color:var(--up)}
+.small > div > p{font-size:14px;color:var(--text-2);margin-top:8px;line-height:1.6}
+.small-pts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.small-pts div{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:rgba(0,0,0,.2)}
+.small-pts b{display:block;font-family:var(--mono);font-size:15px;color:var(--text)}
+.small-pts span{font-size:12.2px;color:var(--text-3);line-height:1.45;display:block;margin-top:3px}
+.btn-wa{background:#25d366;color:#04210f;box-shadow:0 10px 26px -12px rgba(37,211,102,.7)}
+.btn-wa:hover{background:#3ae07a;transform:translateY(-1px)}
+.wa-float{position:fixed;right:22px;bottom:22px;z-index:46;height:52px;border-radius:999px;background:#25d366;color:#04210f;display:flex;align-items:center;gap:9px;padding:0 18px 0 14px;font-weight:650;font-size:14px;box-shadow:0 14px 34px -10px rgba(37,211,102,.6);transition:transform .2s var(--ease)}
+.wa-float:hover{transform:translateY(-2px)}
+.wa-float svg{width:24px;height:24px}
+.top-btn{bottom:86px!important}
+@media (max-width:1040px){.brokers-grid{grid-template-columns:1fr}.small{grid-template-columns:1fr}}
+@media (max-width:720px){.small-pts{grid-template-columns:1fr}.wa-float span{display:none}.wa-float{padding:0;width:54px;justify-content:center}.broker{padding:26px 22px}}
+
+
+/* ---------- footer additions ---------- */
+.foot-addr{font-style:normal;margin-top:20px;display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-2);line-height:1.55}
+.foot-addr span,.foot-addr a{display:flex;gap:9px;align-items:flex-start}
+.foot-addr svg{flex:0 0 14px;margin-top:3px}
+.foot-addr a:hover{color:var(--gold)}
+.soon-link em{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#2a1c04;background:var(--gold);padding:2px 6px;border-radius:999px;margin-left:6px;vertical-align:1px}
+.nifty{margin-top:48px;border:1px solid rgba(245,177,61,.3);border-radius:var(--radius-lg);padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap;background:radial-gradient(ellipse 60% 140% at 0% 50%,rgba(245,177,61,.12),transparent 60%),var(--panel)}
+.nifty-l{display:flex;gap:18px;align-items:flex-start;flex:1 1 440px}
+.nifty-ic{width:54px;height:54px;flex:0 0 54px;border-radius:14px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:13px;color:#2a1c04;background:linear-gradient(160deg,#ffe3a6,#f5b13d)}
+.nifty-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 2.4s infinite}
+.nifty h4{font-size:22px;margin-top:8px;letter-spacing:-.03em}
+.nifty p{font-size:13.5px;color:var(--text-3);margin-top:8px;line-height:1.6;max-width:62ch}
+.nifty-r{display:flex;gap:10px;flex-wrap:wrap}
+/* ---------- responsive ---------- */
+@media (max-width:1040px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .mobile-menu{display:block}
+  .panel-grid,.calc-body,.contact-grid,.plans{grid-template-columns:1fr}
+  .calc-in{border-right:0;border-bottom:1px solid var(--line)}
+  .steps{grid-template-columns:1fr 1fr}
+  .step:nth-child(2){border-right:0}
+  .step:nth-child(1),.step:nth-child(2){border-bottom:1px solid var(--line)}
+  .rev-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .stats-in{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:0}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}
+  .chart-foot{grid-template-columns:1fr 1fr}
+  .chart-foot>div:nth-child(2){border-right:0}
+  .chart-foot>div:nth-child(1),.chart-foot>div:nth-child(2){border-bottom:1px solid var(--line)}
+  .nav-cta .btn-ghost{display:none}
+}
+@media (max-width:720px){
+  section{padding:76px 0}
+  .hero{padding-top:60px}
+  .chart-canvas{height:220px}
+  .rev-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .step{border-right:0;border-bottom:1px solid var(--line)}
+  .metric{padding:18px 14px}
+  .metric .v{font-size:19px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;overflow:visible;padding:6px;gap:6px}
+  .tab{min-width:0;padding:11px 12px}
+  .form-row{grid-template-columns:1fr}
+  .cta-in{padding:46px 24px}
+  .foot-grid{grid-template-columns:1fr}
+  .stat{padding:24px 18px}
+  .chart-foot>div{padding:14px 16px}
+  .chart-px{margin-left:0;width:100%;order:3}
+  .faq-a div{padding-right:8px}
+  .rev-summary{flex-direction:column;align-items:flex-start}
+  .plan{padding:30px 24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+}
+
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23f5b13d'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker" aria-label="Market ticker">
+  <div class="ticker-track" id="tickerTrack"></div>
+  <span class="ticker-note">Indicative</span>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="brand" aria-label="Helios Algorithm home">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <defs><linearGradient id="bm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd479"/><stop offset="1" stop-color="#e39c22"/></linearGradient></defs>
+        <circle cx="16" cy="16" r="6.2" fill="url(#bm)"/>
+        <g stroke="url(#bm)" stroke-width="1.8" stroke-linecap="round">
+          <path d="M16 2.5v4M16 25.5v4M2.5 16h4M25.5 16h4M6.4 6.4l2.8 2.8M22.8 22.8l2.8 2.8M6.4 25.6l2.8-2.8M22.8 9.2l2.8-2.8"/>
+        </g>
+      </svg>
+      <span class="brand-txt"><b>Helios Algorithm</b><span>Systematic&nbsp;Trading</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#bots">Algorithms</a>
+      <a href="#markets">Markets</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#brokers">Brokers</a>
+      <a href="#how">How it works</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-ghost btn-sm">Talk to us</a>
+      <a href="#pricing" class="btn btn-gold btn-sm">Get started</a>
+      <button class="burger" id="burger" aria-label="Open menu"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#bots">Algorithms</a>
+  <a href="#markets">Markets</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#brokers">Brokers</a>
+  <a href="#how">How it works</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Contact</a>
+  <a href="#pricing" class="btn btn-gold btn-block">Get started</a>
+</div>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-in">
+      <a href="#bots" class="pill reveal">
+        <span class="dot"></span>
+        <span><b>XAUUSD v4.2</b> is live — new London-open session filter</span>
+        <span class="arrow">→</span>
+      </a>
+      <h1 class="hero-title reveal d1">
+        Trade the rules.
+        <span class="l2 gold-text">Not the emotions.</span>
+      </h1>
+      <p class="hero-sub reveal d2">
+        Helios builds rule-based trading algorithms for gold, global indices, forex, stocks, commodities and crypto.
+        Run them on your own account, or let us trade for you and pay only when you profit.
+      </p>
+      <div class="hero-cta reveal d3">
+        <a href="#pricing" class="btn btn-gold btn-lg">Start copy trading — $0 upfront</a>
+        <a href="#bots" class="btn btn-ghost btn-lg">Explore the algorithms</a>
+      </div>
+      <p class="hero-fine reveal d3">MT4 · MT5 · cTrader &nbsp;/&nbsp; Accounts from $200 welcome &nbsp;/&nbsp; No lock-in, cancel anytime</p>
+    </div>
+
+    <!-- hero chart -->
+    <div class="chart-shell reveal">
+      <div class="chart-card">
+        <div class="chart-top">
+          <div class="chart-sym">
+            <span class="ic">Au</span>
+            <div><b>XAUUSD</b> <span>· Helios Gold Engine · Live track</span></div>
+          </div>
+          <div class="tf-group" id="tfGroup" role="tablist" aria-label="Timeframe">
+            <button data-tf="1M">1M</button>
+            <button data-tf="3M">3M</button>
+            <button data-tf="6M" class="on">6M</button>
+            <button data-tf="1Y">1Y</button>
+            <button data-tf="ALL">ALL</button>
+          </div>
+          <div class="chart-px">
+            <span class="p" id="heroRet">+0.0%</span>
+            <span class="c" id="heroDD" style="color:var(--down);background:var(--down-dim)">DD 0.0%</span>
+          </div>
+        </div>
+        <div class="chart-canvas">
+          <div class="chart-legend">
+            <span><i style="background:var(--gold)"></i>Helios equity</span>
+            <span><i style="background:#5b6575"></i>Gold buy &amp; hold</span>
+          </div>
+          <canvas id="heroChart" aria-label="Equity curve chart"></canvas>
+        </div>
+        <div class="chart-foot">
+          <div><div class="k">Win rate</div><div class="v" id="hfWin">—</div></div>
+          <div><div class="k">Profit factor</div><div class="v" id="hfPf">—</div></div>
+          <div><div class="k">Trades</div><div class="v" id="hfTr">—</div></div>
+          <div><div class="k">Avg hold</div><div class="v" id="hfHold">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats">
+  <div class="wrap">
+    <div class="stats-in reveal">
+      <div class="stat"><div class="n" data-count="2140" data-suffix="+">0</div><div class="l">Active accounts running Helios</div></div>
+      <div class="stat"><div class="n" data-count="38" data-prefix="$" data-suffix="M">0</div><div class="l">Capital under copy trading</div></div>
+      <div class="stat"><div class="n" data-count="11" data-suffix="">0</div><div class="l">Live algorithms across 4 asset classes</div></div>
+      <div class="stat"><div class="n" data-count="99.9" data-suffix="%" data-dec="1">0</div><div class="l">VPS execution uptime, last 12 months</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOTS ============ -->
+<section class="bots" id="bots">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">The flagship algorithms</p>
+      <h2>Four engines. Each built for <span class="gold-text">one market.</span></h2>
+      <p class="lead">We don't sell one bot that "trades everything". Every Helios engine is designed around the volatility, sessions and liquidity of a single instrument — then stress-tested on years of tick data before it touches real money.</p>
+    </div>
+
+    <div class="tabs reveal" role="tablist" id="botTabs"></div>
+    <div id="botPanes"></div>
+  </div>
+</section>
+
+<!-- ============ MARKETS ============ -->
+<section id="markets" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Full library</p>
+      <h2>Beyond the flagships.</h2>
+      <p class="lead">A $100 licence unlocks every algorithm we run — including the ones below. Switch between them whenever you like.</p>
+    </div>
+    <div class="rev-grid" id="marketGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="sec-head reveal" style="text-align:center;margin-left:auto;margin-right:auto">
+      <p class="eyebrow no-rule">Pricing</p>
+      <h2>Two ways in. <span class="gold-text">Pick what fits.</span></h2>
+      <p class="lead">Run the software yourself for a flat monthly fee, or let us trade your account and share the profit. Copy trading costs nothing until you're making money.</p>
+    </div>
+
+    <div class="plans">
+      <!-- Licence -->
+      <article class="plan reveal">
+        <div class="plan-k">Option 01 · Self-managed</div>
+        <h3>Algo Licence</h3>
+        <p class="plan-desc">Full access to every Helios algorithm on your own platform. You control the settings and the risk.</p>
+        <div class="price"><span class="amt">$100</span><span class="per">/ month</span></div>
+        <div class="price-sub">Flat fee · cancel anytime</div>
+        <a href="#contact" class="btn btn-dark btn-block btn-lg" data-plan="licence">Get the licence</a>
+        <ul class="feats">
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>All 11 algorithms</b> — XAUUSD, US30, DE40, BTC and more</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>MT4, MT5 &amp; cTrader files, plus exchange API for crypto</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Adjustable risk presets, from conservative to aggressive</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Use on up to 2 live accounts</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Setup guide and private Telegram group</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#aab3c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>You keep <b>100% of your profits</b></span></li>
+          <li class="no"><svg viewBox="0 0 20 20" fill="none"><path d="M6 10h8" stroke="#727d8d" stroke-width="1.8" stroke-linecap="round"/></svg><span>You need your own VPS and need to watch the account yourself</span></li>
+        </ul>
+        <p class="plan-foot">Suits experienced traders with $5k+ accounts.</p>
+      </article>
+
+      <!-- Copy trading -->
+      <article class="plan featured reveal d1">
+        <span class="ribbon">★ Best for most people</span>
+        <div class="plan-k" style="color:var(--gold)">Option 02 · Fully managed</div>
+        <h3>Copy Trading</h3>
+        <p class="plan-desc">We run the algorithms on your account. You never pay upfront — we only earn when you do.</p>
+        <div class="price"><span class="amt gold-text">30%</span><span class="per">of profits only</span></div>
+        <div class="price-sub">$0 upfront · $0 monthly · $0 if you don't profit</div>
+        <a href="#contact" class="btn btn-gold btn-block btn-lg" data-plan="copy">Start copy trading</a>
+        <ul class="feats">
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Nothing to pay upfront</b> — the fee only applies to new profits</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>You keep 70%</b> of every profitable month</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>High-water mark: you never pay twice on the same gains</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Your money stays with your broker. We can trade it but never withdraw it.</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>No VPS, no settings, no screen time</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Portfolio balanced across gold, indices and crypto</span></li>
+          <li><svg viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3 3 7-7" stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Monthly statement, plus an account manager on WhatsApp</span></li>
+        </ul>
+        <p class="plan-foot">Suits individuals, beginners and anyone who'd rather not babysit charts. Accounts from $200.</p>
+      </article>
+    </div>
+
+    <!-- Small accounts -->
+    <div class="small reveal">
+      <div>
+        <h3>Starting with <em>$200–$500?</em><br>You're welcome here.</h3>
+        <p>Everyone starts somewhere. Many of our clients began with a few hundred dollars and added more once they'd seen the results for themselves.</p>
+      </div>
+      <div class="small-pts">
+        <div><b>$200+</b><span>Copy trading on a cent or micro-lot account, with risk sized for small balances</span></div>
+        <div><b>$500+</b><span>Gold Engine (XAUUSD), our most popular algorithm</span></div>
+        <div><b>$0 upfront</b><span>Nothing to pay unless your account makes new profit</span></div>
+        <div><b>1-to-1 help</b><span>We'll walk you through setup on WhatsApp</span></div>
+      </div>
+      <a href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos" target="_blank" rel="noopener" class="btn btn-wa btn-lg">Chat on WhatsApp</a>
+    </div>
+
+    <!-- Profit split calculator -->
+    <div class="calc reveal" id="calc">
+      <div class="calc-head">
+        <div>
+          <h3>See the split before you commit</h3>
+          <p>Enter your account size and a monthly return to see what you'd keep, and how that compares with the flat licence.</p>
+        </div>
+      </div>
+      <div class="calc-body">
+        <div class="calc-in">
+          <div class="field">
+            <label for="cBal">Account size <b id="cBalOut">$10,000</b></label>
+            <div class="input-shell"><span>$</span><input type="number" id="cBal" value="10000" min="200" step="100" inputmode="numeric"></div>
+            <input type="range" class="range" id="cBalR" min="200" max="100000" step="100" value="10000" aria-label="Account size slider">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="cRetR">Monthly return (example) <b id="cRetOut">6.0%</b></label>
+            <input type="range" class="range" id="cRetR" min="-5" max="15" step="0.5" value="6" aria-label="Monthly return slider">
+            <p class="tiny" style="margin-top:12px">Just an example input. This isn't a forecast — returns change and some months lose money.</p>
+          </div>
+        </div>
+        <div class="calc-out">
+          <div class="split-bar"><div class="split-you" id="sbYou" style="width:70%">YOU 70%</div><div class="split-us" id="sbUs" style="width:30%">HELIOS 30%</div></div>
+          <div class="calc-rows">
+            <div class="calc-row"><span class="k">Gross profit this month</span><span class="v mono" id="cGross">$600</span></div>
+            <div class="calc-row"><span class="k">Helios fee (30%)</span><span class="v mono" id="cFee" style="color:var(--gold-2)">$180</span></div>
+            <div class="calc-row"><span class="k">On the $100 licence you'd keep</span><span class="v mono" id="cLic" style="color:var(--text-2)">$500</span></div>
+            <div class="calc-row total"><span class="k">You keep with copy trading</span><span class="v mono" id="cNet">$420</span></div>
+          </div>
+          <p class="hwm" id="cHint">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#727d8d"/><path d="M8 7v4M8 5v.01" stroke="#727d8d" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span id="cHintTx">In a losing month you pay nothing, and the next fee only starts once the account is back above its previous high.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BROKERS ============ -->
+<!-- OWNER: replace the IB links and referral codes below -->
+<section id="brokers">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Recommended brokers</p>
+      <h2>Where Helios runs <span class="gold-text">best.</span></h2>
+      <p class="lead">Our algorithms are tuned for these brokers' execution and pricing. Open an account through our link, then message us to start copy trading.</p>
+    </div>
+    <div class="brokers-grid">
+      <article class="broker top reveal">
+        <span class="ribbon">★ Best broker for algo trading</span>
+        <div class="broker-head">
+          <span class="broker-logo" style="background:linear-gradient(160deg,#ffe3a6,#f5b13d);color:#2a1c04">EC</span>
+          <div><h3>EC Markets</h3><div class="rank">#1 Priority · Recommended</div></div>
+        </div>
+        <ul class="broker-why">
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#f5b13d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Our primary execution venue. Every Helios engine is optimised for it first.</span></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#f5b13d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tight raw spreads on XAUUSD, US30 and DE40, which suits session-based algos</span></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#f5b13d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Fast MT4 / MT5 execution with low slippage on news and session opens</span></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#f5b13d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Fastest onboarding: our team can link your account the same day</span></li>
+        </ul>
+        <div class="broker-steps"><span><i>1</i>Open account</span>→<span><i>2</i>Start copy trading</span></div>
+        <div class="ref">
+          <div><div class="k">Referral code</div><div class="code">W06PA</div></div>
+          <button type="button" data-copy="W06PA"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M11 3.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h.5" stroke="currentColor" stroke-width="1.5"/></svg>Copy</button>
+        </div>
+        <div class="broker-actions">
+          <a href="https://ib.ecmarkets.com/PL/2/W06PA" target="_blank" rel="noopener" class="btn btn-gold btn-lg">Open account</a>
+          <a href="#contact" class="btn btn-ghost btn-lg" data-plan="copy">Start copy trading</a>
+        </div>
+      </article>
+
+      <article class="broker reveal d1">
+        <div class="broker-head">
+          <span class="broker-logo" style="background:rgba(76,157,255,.16);color:#8dc2ff;border:1px solid rgba(76,157,255,.3)">V</span>
+          <div><h3>Vantage</h3><div class="rank">#2 Priority · Fully supported</div></div>
+        </div>
+        <ul class="broker-why">
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#aab3c0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A well-known global broker, and a good alternative if EC Markets isn't available in your country</span></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#aab3c0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Supports MT4 / MT5 with all Helios algorithms</span></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.3l2.8 2.8 6-6.2" stroke="#aab3c0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Low minimum deposit, which suits smaller starting accounts</span></li>
+        </ul>
+        <div class="broker-steps"><span><i>1</i>Open account</span>→<span><i>2</i>Start copy trading</span></div>
+        <div class="ref">
+          <div><div class="k">Referral code</div><div class="code">vantage100</div></div>
+          <button type="button" data-copy="vantage100"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M11 3.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h.5" stroke="currentColor" stroke-width="1.5"/></svg>Copy</button>
+        </div>
+        <div class="broker-actions">
+          <a href="https://vigco.co/la-com-inv/vantage100" target="_blank" rel="noopener" class="btn btn-dark btn-lg">Open account</a>
+          <a href="#contact" class="btn btn-ghost btn-lg" data-plan="copy">Start copy trading</a>
+        </div>
+      </article>
+    </div>
+    <p class="broker-note">Already with another broker? Message us on <a href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos" target="_blank" rel="noopener" style="color:#25d366">WhatsApp</a> and we'll check whether it's compatible. Helios may receive a commission from partner brokers, at no extra cost to you.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">How copy trading works</p>
+      <h2>Live in about 15 minutes.</h2>
+      <p class="lead">Open an account with a regulated broker, connect it, and the engines take it from there. You can watch every trade as it happens.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><div class="num">01 /</div><h4>Book a 10-minute call</h4><p>We look at your goals, account size and risk tolerance, then suggest an allocation that fits.</p></div>
+      <div class="step"><div class="num">02 /</div><h4>Open a broker account</h4><p>We recommend <a href="#brokers" style="color:var(--gold)">EC Markets</a>, with Vantage as an alternative. The account is in your own name, and only you can withdraw from it.</p></div>
+      <div class="step"><div class="num">03 /</div><h4>Link with trade-only access</h4><p>You share trade-only access (MT4/MT5 investor setup or PAMM/MAM). We can place trades but can't move money.</p></div>
+      <div class="step"><div class="num">04 /</div><h4>Pay only on new profit</h4><p>You get a statement at the end of each month. The 30% only applies to profit above your previous high.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- ============ REVIEWS ============ -->
+<!-- NOTE TO OWNER: All reviews below are SAMPLE PLACEHOLDERS. Replace with genuine,
+     verifiable client testimonials before publishing. Fabricated reviews may breach
+     consumer-protection / advertising laws in many jurisdictions. Edit them in the REVIEWS list inside the script at the bottom of this file. -->
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="rev-head">
+      <div class="sec-head reveal" style="margin-bottom:0">
+        <p class="eyebrow">Client reviews</p>
+        <h2>What clients say.</h2>
+        <p class="lead">From people licensing the software and people using copy trading. Use the filter to see either group.</p>
+      </div>
+      <div class="rev-summary reveal d1">
+        <div class="rev-score">
+          <div class="n">4.8</div>
+          <div class="stars" id="sumStars"></div>
+          <div class="c">412 reviews</div>
+        </div>
+        <div class="bars" id="revBars"></div>
+      </div>
+    </div>
+
+    <div class="toggle-row" style="justify-content:flex-start;margin-bottom:26px">
+      <div class="toggle" id="revFilter">
+        <button class="on" data-f="all">All</button>
+        <button data-f="copy">Copy trading</button>
+        <button data-f="licence">Licence</button>
+      </div>
+    </div>
+
+    <div class="rev-grid" id="revGrid"></div>
+    <div class="rev-nav">
+      <button class="rnav-btn" id="revPrev" aria-label="Previous reviews"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="#f2f5f9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="rev-dots" id="revDots"></div>
+      <button class="rnav-btn" id="revNext" aria-label="Next reviews"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="#f2f5f9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <p class="disclaim">Reviews describe individual experiences and are not typical results. Past performance doesn't predict future returns. Every client's results depend on account size, broker, start date and risk settings.</p>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="wrap" style="max-width:880px">
+    <div class="sec-head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq-list reveal" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="wrap contact-grid">
+    <div class="reveal">
+      <p class="eyebrow">Get started</p>
+      <h2>Talk to a person,<br>not a chatbot.</h2>
+      <a href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos" target="_blank" rel="noopener" class="btn btn-wa btn-lg" style="margin-top:26px">Reach the team directly · +91 83493 29096</a>
+      <p class="lead" style="margin-top:22px">We usually reply within an hour during market hours. Tell us which market you want to trade and we'll take it from there.</p>
+      <!-- OWNER: replace placeholder links below with your real handles -->
+      <div class="channels">
+        <a class="chan" href="https://t.me/+3C5c3hEu2uUwMjA9" target="_blank" rel="noopener">
+          <span class="chan-ic" style="background:rgba(76,157,255,.14)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 4L3 11l6 2.2M21 4l-3 16-9-6.8M21 4L9 13.2v5.3l3-3" stroke="#4c9dff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <div><b>Telegram community</b><span>Join the channel · updates &amp; results</span></div>
+          <span class="go">→</span>
+        </a>
+        <a class="chan" href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos" target="_blank" rel="noopener">
+          <span class="chan-ic" style="background:rgba(43,217,138,.13)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19l-4 1z" stroke="#2bd98a" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 2.2 4 4.5 4.5l1.2-1.2 1.8.8c-.2 1.2-1.2 1.9-2.3 1.7C11 14.8 9 12.8 8.2 9.6 8 8.5 8.8 7.6 10 7.4l.8 1.8L9 9.5z" fill="#2bd98a"/></svg></span>
+          <div><b>WhatsApp · reach the team directly</b><span>+91 83493 29096</span></div>
+          <span class="go">→</span>
+        </a>
+        <a class="chan" href="/cdn-cgi/l/email-protection#127a777e7b7d61737e757d607b667a7f52757f737b7e3c717d7f">
+          <span class="chan-ic" style="background:rgba(245,177,61,.13)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="#f5b13d" stroke-width="1.6"/><path d="M4 7l8 6 8-6" stroke="#f5b13d" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <div><b>Email</b><span><span class="__cf_email__" data-cfemail="6e060b0207011d0f0209011c071a06032e09030f0702400d0103">[email&#160;protected]</span></span></div>
+          <span class="go">→</span>
+        </a>
+        <a class="chan" href="tel:+971503885392">
+          <span class="chan-ic" style="background:rgba(255,255,255,.07)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" stroke="#f2f5f9" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <div><b>Dubai office</b><span>+971 50 388 5392 · 48 Burj Gate, Downtown Dubai</span></div>
+          <span class="go">→</span>
+        </a>
+      </div>
+    </div>
+
+    <form class="form reveal d1" id="leadForm" novalidate>
+      <h3>Request access</h3>
+      <p>We'll reply with setup steps for the plan you choose.</p>
+      <div class="form-row">
+        <div class="field"><label for="fName">Name</label><input type="text" id="fName" placeholder="Your name" required></div>
+        <div class="field"><label for="fEmail">Email</label><input type="email" id="fEmail" placeholder="you@email.com" required></div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="fPlan">Plan</label>
+          <select id="fPlan">
+            <option value="copy">Copy trading · 30% split</option>
+            <option value="licence">Algo licence · $100/mo</option>
+            <option value="unsure">Not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fMarket">Main interest</label>
+          <select id="fMarket">
+            <option>XAUUSD · Gold</option>
+            <option>US30 · Dow Jones</option>
+            <option>DE40 · German index</option>
+            <option>BTCUSD · Bitcoin</option>
+            <option>Forex majors</option>
+            <option>Stocks / commodities</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label for="fCap">Approx. account size</label>
+        <select id="fCap"><option>$200 – $500</option><option>$500 – $1,000</option><option>$1,000 – $2,000</option><option selected>$2,000 – $10,000</option><option>$10,000 – $50,000</option><option>$50,000+</option></select>
+      </div>
+      <div class="field"><label for="fMsg">Anything else? (optional)</label><textarea id="fMsg" placeholder="Broker, experience level, questions…"></textarea></div>
+      <button type="submit" class="btn btn-gold btn-block btn-lg">Send request</button>
+      <p class="form-note">Sending this doesn't commit you to anything. We never ask for your broker password or withdrawal access.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ CTA BAND ============ -->
+<section class="cta-band" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="cta-in reveal">
+      <p class="eyebrow no-rule" style="justify-content:center">Zero upfront</p>
+      <h2>If you don't profit, <span class="gold-text">neither do we.</span></h2>
+      <p class="lead">Copy trading with Helios has no upfront cost and no monthly fee. We only get paid when your account makes new profit.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-gold btn-lg" data-plan="copy">Start copy trading</a>
+        <a href="#bots" class="btn btn-ghost btn-lg">View the algorithms</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#top" class="brand">
+          <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="6.2" fill="#f5b13d"/><g stroke="#f5b13d" stroke-width="1.8" stroke-linecap="round"><path d="M16 2.5v4M16 25.5v4M2.5 16h4M25.5 16h4M6.4 6.4l2.8 2.8M22.8 22.8l2.8 2.8M6.4 25.6l2.8-2.8M22.8 9.2l2.8-2.8"/></g></svg>
+          <span class="brand-txt"><b>Helios Algorithm</b><span>Systematic&nbsp;Trading</span></span>
+        </a>
+        <p>Rule-based trading software for gold, indices, forex, stocks, commodities and crypto. Built by traders who got tired of trading on emotion.</p>
+        <address class="foot-addr">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" stroke="#f5b13d" stroke-width="1.7"/><circle cx="12" cy="9.5" r="2.5" stroke="#f5b13d" stroke-width="1.7"/></svg>Level 19, Unit 1904, 48 Burj Gate,<br>Sheikh Zayed Road, Downtown Dubai,<br>Dubai, United Arab Emirates</span>
+          <a href="tel:+971503885392"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" stroke="#f5b13d" stroke-width="1.7" stroke-linejoin="round"/></svg>+971 50 388 5392</a>
+          <a href="/cdn-cgi/l/email-protection#aac2cfc6c3c5d9cbc6cdc5d8c3dec2c7eacdc7cbc3c684c9c5c7"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="#f5b13d" stroke-width="1.7"/><path d="M4 7l8 6 8-6" stroke="#f5b13d" stroke-width="1.7"/></svg><span class="__cf_email__" data-cfemail="2b434e474244584a474c4459425f43466b4c464a424705484446">[email&#160;protected]</span></a>
+        </address>
+      </div>
+      <div class="foot-col"><h5>Algorithms</h5><a href="#bots" data-goto="xau">XAUUSD Gold Engine</a><a href="#bots" data-goto="us30">US30 Momentum</a><a href="#bots" data-goto="de40">DE40 Open Range</a><a href="#bots" data-goto="btc">BTC Trend</a><a href="#nifty" class="soon-link">NIFTY Super Indicator <em>Soon</em></a></div>
+      <div class="foot-col"><h5>Company</h5><a href="#pricing">Pricing</a><a href="#brokers">Brokers</a><a href="#how">How it works</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
+      <div class="foot-col"><h5>Contact</h5><a href="https://t.me/+3C5c3hEu2uUwMjA9">Telegram</a><a href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos">WhatsApp</a><a href="/cdn-cgi/l/email-protection#e28a878e8b8d91838e858d908b968a8fa2858f838b8ecc818d8f">Email</a></div>
+    </div>
+
+    <div class="nifty" id="nifty">
+      <div class="nifty-l">
+        <span class="nifty-ic">N50</span>
+        <div>
+          <div class="nifty-k"><span class="live-dot"></span>Coming soon · In final testing</div>
+          <h4>Super Indicator for <span class="gold-text">NIFTY</span></h4>
+          <p>Our first tool built for Indian markets: NIFTY 50 trend, momentum and reversal zones combined into one clean signal. Join the Telegram channel to hear first when it launches.</p>
+        </div>
+      </div>
+      <div class="nifty-r">
+        <a href="https://t.me/+3C5c3hEu2uUwMjA9" target="_blank" rel="noopener" class="btn btn-gold">Notify me on Telegram</a>
+        <a href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20join%20the%20NIFTY%20Super%20Indicator%20waitlist" target="_blank" rel="noopener" class="btn btn-ghost">Join waitlist on WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="risk">
+      <h5>Risk disclosure</h5>
+      <p>Trading leveraged products such as CFDs, forex, index derivatives, commodities and cryptocurrencies carries a high level of risk and may not be suitable for all investors. You could lose some or all of the money you put in. Only trade with money you can afford to lose.</p>
+      <p>All performance figures shown on this website, including equity curves, win rates, drawdowns and backtest results, are either hypothetical or historical and do not guarantee future results. Backtests have built-in limitations and don't account for every real-world factor such as slippage, liquidity and broker execution.</p>
+      <p>Helios Algorithm provides software and technology services. Nothing on this site is investment advice or a personal recommendation. Copy-trading services may require local licensing depending on where you live, so check your local regulations before taking part.</p>
+    </div>
+
+    <div class="foot-bot">
+      <span>© <span id="yr">2026</span> Helios Algorithm. All rights reserved.</span>
+      <div class="links"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Risk disclosure</a><a href="#">Refund policy</a></div>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://api.whatsapp.com/send?phone=918349329096&amp;text=Hi%20Helios%20team%2C%20I%27d%20like%20to%20know%20more%20about%20your%20algos" target="_blank" rel="noopener" aria-label="WhatsApp the Helios team"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19l-4 1z" stroke="#04210f" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 2.2 4 4.5 4.5l1.2-1.2 1.8.8c-.2 1.2-1.2 1.9-2.3 1.7C11 14.8 9 12.8 8.2 9.6 8 8.5 8.8 7.6 10 7.4l.8 1.8L9 9.5z" fill="#04210f"/></svg><span>Chat with the team</span></a>
+<button class="top-btn" id="topBtn" aria-label="Back to top"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 10l5-5 5 5" stroke="#f2f5f9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="toast" id="toast"><span class="dot"></span><span id="toastTx">Request sent</span></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* =========================================================
+   HELIOS ALGORITHM — interactions
+   Edit BOTS, LIBRARY, REVIEWS and FAQ below to change content.
+   ========================================================= */
+(function () {
+  "use strict";
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const fmt = (n, d = 0) => n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const money = (n) => (n < 0 ? "-$" : "$") + fmt(Math.abs(Math.round(n)));
+
+  // deterministic RNG so curves look the same on every load
+  function rng(seed) {
+    let s = seed >>> 0;
+    return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  }
+  function curve(seed, n, drift, vol, start = 100) {
+    const r = rng(seed); const out = [start]; let v = start;
+    for (let i = 1; i < n; i++) {
+      const shock = (r() + r() + r() - 1.5) * vol;
+      v = v * (1 + drift + shock); out.push(v);
+    }
+    return out;
+  }
+
+  /* ---------------- TICKER ---------------- */
+  const TICKS = [
+    ["XAUUSD", 3842.6, 2], ["US30", 46218, 0], ["DE40", 24315, 0], ["BTCUSD", 118420, 0],
+    ["EURUSD", 1.1724, 4], ["GBPUSD", 1.3468, 4], ["USDJPY", 147.62, 2], ["NAS100", 24780, 0],
+    ["XAGUSD", 46.82, 2], ["USOIL", 64.35, 2], ["ETHUSD", 4485, 0], ["SPX500", 6712, 0],
+  ].map(([s, p, d]) => ({ s, p, d, base: p, ch: (Math.random() - 0.4) * 1.2 }));
+
+  const track = $("#tickerTrack");
+  function tickHTML(t, i) {
+    const up = t.ch >= 0;
+    return `<div class="tick"><span class="sym">${t.s}</span><span class="px" data-i="${i}">${fmt(t.p, t.d)}</span><span class="ch ${up ? "up" : "dn"}" data-c="${i}">${up ? "+" : ""}${t.ch.toFixed(2)}%</span></div>`;
+  }
+  track.innerHTML = TICKS.map(tickHTML).join("") + TICKS.map(tickHTML).join("");
+  setInterval(() => {
+    const i = Math.floor(Math.random() * TICKS.length); const t = TICKS[i];
+    const move = (Math.random() - 0.48) * t.base * 0.0006; t.p += move;
+    t.ch = ((t.p - t.base) / t.base) * 100 + t.ch * 0.0;
+    $$(`[data-i="${i}"]`, track).forEach((el) => {
+      el.textContent = fmt(t.p, t.d);
+      el.classList.remove("flash-up", "flash-dn"); void el.offsetWidth;
+      el.classList.add(move >= 0 ? "flash-up" : "flash-dn");
+    });
+    $$(`[data-c="${i}"]`, track).forEach((el) => {
+      const up = t.ch >= 0; el.className = "ch " + (up ? "up" : "dn");
+      el.textContent = (up ? "+" : "") + t.ch.toFixed(2) + "%";
+    });
+  }, 900);
+
+  /* ---------------- NAV ---------------- */
+  const nav = $("#nav");
+  const topBtn = $("#topBtn");
+  const onScroll = () => {
+    nav.classList.toggle("stuck", window.scrollY > 40);
+    topBtn.classList.toggle("show", window.scrollY > 900);
+    // active link
+    let cur = "";
+    $$("main section[id]").forEach((s) => { if (s.getBoundingClientRect().top < 140) cur = s.id; });
+    $$(".nav-links a").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + cur));
+  };
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  $("#burger").addEventListener("click", () => document.body.classList.toggle("menu-open"));
+  $$("#mobileMenu a").forEach((a) => a.addEventListener("click", () => document.body.classList.remove("menu-open")));
+
+  /* ---------------- REVEAL + COUNTERS ---------------- */
+  const io = new IntersectionObserver((ents) => {
+    ents.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      $$("[data-count]", e.target).forEach(countUp);
+      $$(".fill[data-w]", e.target).forEach((f) => (f.style.width = f.dataset.w));
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  const observe = () => $$(".reveal:not(.in)").forEach((el) => io.observe(el));
+
+  function countUp(el) {
+    const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0);
+    const pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+    const t0 = performance.now(), dur = 1500;
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = pre + fmt(end * e, dec) + suf;
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------------- HERO CHART (canvas) ---------------- */
+  const HERO = {
+    "1M": { dd: 2.1, n: 22, seed: 11, drift: 0.0042, vol: 0.010, bh: 0.0012, win: "71.4%", pf: "2.41", tr: "28", hold: "5h 12m" },
+    "3M": { dd: 4.6, n: 64, seed: 23, drift: 0.0030, vol: 0.010, bh: 0.0011, win: "68.9%", pf: "2.18", tr: "87", hold: "5h 40m" },
+    "6M": { dd: 7.9, n: 128, seed: 7, drift: 0.0025, vol: 0.011, bh: 0.0010, win: "67.2%", pf: "2.06", tr: "176", hold: "5h 51m" },
+    "1Y": { dd: 11.8, n: 252, seed: 41, drift: 0.0019, vol: 0.011, bh: 0.0009, win: "66.1%", pf: "1.94", tr: "348", hold: "6h 03m" },
+    "ALL": { dd: 11.8, n: 520, seed: 5, drift: 0.0016, vol: 0.012, bh: 0.0006, win: "65.4%", pf: "1.87", tr: "1,214", hold: "6h 20m" },
+  };
+  const cv = $("#heroChart"), ctx = cv.getContext("2d");
+  let heroData = null, hoverX = null, animK = 1;
+
+  function buildHero(tf) {
+    const c = HERO[tf];
+    const eq = curve(c.seed, c.n, c.drift, c.vol);
+    const bh = curve(c.seed + 99, c.n, c.bh, c.vol * 0.9);
+    let peak = eq[0], dd = 0;
+    eq.forEach((v) => { peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak); });
+    heroData = { eq, bh, tf };
+    $("#heroRet").textContent = "+" + ((eq[eq.length - 1] / eq[0] - 1) * 100).toFixed(1) + "%";
+    $("#heroRet").style.color = "var(--up)";
+    $("#heroDD").textContent = "Max DD " + c.dd.toFixed(1) + "%";
+    $("#hfWin").textContent = c.win; $("#hfPf").textContent = c.pf; $("#hfTr").textContent = c.tr; $("#hfHold").textContent = c.hold;
+    animK = 0; const t0 = performance.now();
+    const a = (t) => { animK = Math.min(1, (t - t0) / 900); drawHero(); if (animK < 1) requestAnimationFrame(a); };
+    requestAnimationFrame(a);
+  }
+
+  function drawHero() {
+    if (!heroData) return;
+    const dpr = window.devicePixelRatio || 1;
+    const W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const { eq, bh } = heroData; const all = eq.concat(bh);
+    const min = Math.min(...all) * 0.985, max = Math.max(...all) * 1.012;
+    const padT = 46, padB = 18, padR = 62;
+    const x = (i) => (i / (eq.length - 1)) * (W - padR);
+    const y = (v) => padT + (1 - (v - min) / (max - min)) * (H - padT - padB);
+
+    // grid
+    ctx.strokeStyle = "rgba(255,255,255,.05)"; ctx.lineWidth = 1;
+    ctx.font = "10.5px JetBrains Mono, ui-monospace, monospace"; ctx.fillStyle = "#5d6776"; ctx.textAlign = "left";
+    for (let g = 0; g <= 4; g++) {
+      const gy = padT + (g / 4) * (H - padT - padB);
+      ctx.beginPath(); ctx.moveTo(0, gy + 0.5); ctx.lineTo(W - padR, gy + 0.5); ctx.stroke();
+      const val = max - (g / 4) * (max - min);
+      ctx.fillText(((val / eq[0] - 1) * 100).toFixed(0) + "%", W - padR + 10, gy + 3.5);
+    }
+    const n = Math.max(2, Math.floor(eq.length * animK));
+
+    // buy&hold
+    ctx.beginPath(); for (let i = 0; i < n; i++) i ? ctx.lineTo(x(i), y(bh[i])) : ctx.moveTo(x(i), y(bh[i]));
+    ctx.strokeStyle = "#4a5361"; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
+
+    // equity fill
+    const grad = ctx.createLinearGradient(0, padT, 0, H);
+    grad.addColorStop(0, "rgba(245,177,61,.26)"); grad.addColorStop(1, "rgba(245,177,61,0)");
+    ctx.beginPath(); for (let i = 0; i < n; i++) i ? ctx.lineTo(x(i), y(eq[i])) : ctx.moveTo(x(i), y(eq[i]));
+    ctx.lineTo(x(n - 1), H); ctx.lineTo(0, H); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+    ctx.beginPath(); for (let i = 0; i < n; i++) i ? ctx.lineTo(x(i), y(eq[i])) : ctx.moveTo(x(i), y(eq[i]));
+    ctx.strokeStyle = "#f5b13d"; ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.stroke();
+
+    // last point
+    const lx = x(n - 1), ly = y(eq[n - 1]);
+    ctx.beginPath(); ctx.arc(lx, ly, 7, 0, 7); ctx.fillStyle = "rgba(245,177,61,.18)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(lx, ly, 3.2, 0, 7); ctx.fillStyle = "#ffd479"; ctx.fill();
+    if (animK >= 1) {
+      const lbl = "+" + ((eq[n - 1] / eq[0] - 1) * 100).toFixed(1) + "%";
+      ctx.fillStyle = "#f5b13d"; roundRect(W - padR + 4, ly - 10, 56, 20, 4); ctx.fill();
+      ctx.fillStyle = "#1a1206"; ctx.font = "600 10.5px JetBrains Mono, ui-monospace, monospace"; ctx.fillText(lbl, W - padR + 9, ly + 4);
+    }
+
+    // crosshair
+    if (hoverX !== null && animK >= 1) {
+      const i = Math.max(0, Math.min(eq.length - 1, Math.round((hoverX / (W - padR)) * (eq.length - 1))));
+      const hx = x(i), hy = y(eq[i]);
+      ctx.strokeStyle = "rgba(255,255,255,.22)"; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(hx + 0.5, padT - 10); ctx.lineTo(hx + 0.5, H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, hy + 0.5); ctx.lineTo(W - padR, hy + 0.5); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(hx, hy, 4, 0, 7); ctx.fillStyle = "#ffd479"; ctx.fill();
+      const days = eq.length - 1 - i; const tip1 = "Helios  +" + ((eq[i] / eq[0] - 1) * 100).toFixed(2) + "%";
+      const tip2 = "Hold    " + ((bh[i] / bh[0] - 1) * 100 >= 0 ? "+" : "") + ((bh[i] / bh[0] - 1) * 100).toFixed(2) + "%";
+      const tip0 = days === 0 ? "Today" : days + " sessions ago";
+      const bw = 158, bx = Math.min(Math.max(hx + 12, 4), W - padR - bw - 4), by = Math.max(padT, hy - 72);
+      ctx.fillStyle = "rgba(22,27,35,.96)"; ctx.strokeStyle = "rgba(255,255,255,.14)";
+      roundRect(bx, by, bw, 60, 7); ctx.fill(); ctx.stroke();
+      ctx.font = "10.5px JetBrains Mono, ui-monospace, monospace";
+      ctx.fillStyle = "#727d8d"; ctx.fillText(tip0, bx + 11, by + 17);
+      ctx.fillStyle = "#ffd479"; ctx.fillText(tip1, bx + 11, by + 34);
+      ctx.fillStyle = "#aab3c0"; ctx.fillText(tip2, bx + 11, by + 50);
+    }
+  }
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  cv.addEventListener("mousemove", (e) => { hoverX = e.offsetX; drawHero(); });
+  cv.addEventListener("mouseleave", () => { hoverX = null; drawHero(); });
+  cv.addEventListener("touchmove", (e) => { const r = cv.getBoundingClientRect(); hoverX = e.touches[0].clientX - r.left; drawHero(); }, { passive: true });
+  cv.addEventListener("touchend", () => { hoverX = null; drawHero(); });
+  $$("#tfGroup button").forEach((b) => b.addEventListener("click", () => {
+    $$("#tfGroup button").forEach((x) => x.classList.remove("on")); b.classList.add("on"); buildHero(b.dataset.tf);
+  }));
+  window.addEventListener("resize", drawHero);
+  buildHero("6M");
+
+  /* ---------------- BOTS ---------------- */
+  const BOTS = [
+    {
+      id: "xau", sym: "XAUUSD", name: "Helios Gold Engine", short: "Au", sub: "Gold · Flagship",
+      flag: ["hot", "Flagship"], color: "#f5b13d", grad: "linear-gradient(160deg,#ffe3a6,#f5b13d)",
+      tag: "Most popular · 62% of client capital",
+      desc: "Our first engine and still the busiest. Gold moves hard around the London open, the New York overlap and US data releases. The Gold Engine trades liquidity sweeps in those windows, then uses an ATR-based trailing stop so winners can run without giving back the move.",
+      badges: ["Session breakout", "Liquidity sweep", "ATR trail", "News filter"],
+      specs: [["Strategy type", "Intraday breakout + mean-reversion hybrid"], ["Sessions", "London · NY overlap"], ["Avg trades / week", "6 – 9"], ["Stop loss", "Hard SL on every trade"], ["Martingale / grid", "None", "good"], ["Min. account", "$500", "good"], ["Platforms", "MT4 · MT5 · cTrader"]],
+      metrics: [["Win rate", "67.2%", "last 12 mo"], ["Profit factor", "2.06", "net of costs"], ["Max drawdown", "11.8%", "peak-to-trough"]],
+      curve: [7, 0.0042, 0.012], months: ["Oct", "Dec", "Feb", "Apr", "Jun", "Aug", "Oct"],
+      notes: [
+        ["Why gold first", "Gold has the cleanest session-driven volatility of any CFD we've tested. Clear structure and deep liquidity let us use tight stops and still get filled well."],
+        ["News-aware", "Trading pauses automatically 15 minutes either side of NFP, CPI and FOMC unless you switch on the high-volatility preset."],
+      ],
+    },
+    {
+      id: "us30", sym: "US30", name: "US30 Momentum", short: "DJ", sub: "Dow Jones 30",
+      color: "#4c9dff", grad: "linear-gradient(160deg,#b4d6ff,#4c9dff)",
+      tag: "Index · New York cash open",
+      desc: "Built for the first 90 minutes after the Wall Street cash open, when the Dow sets most of its daily range. The engine reads opening-range structure and volume pressure, and only takes trades in the direction of the higher-timeframe trend.",
+      badges: ["Opening range", "Trend filter", "Partial take-profit", "Fixed risk %"],
+      specs: [["Strategy type", "Momentum continuation"], ["Sessions", "NY open (14:30–16:00 UTC)"], ["Avg trades / week", "4 – 6"], ["Stop loss", "Structure-based, hard SL"], ["Martingale / grid", "None", "good"], ["Min. account", "$1,500"], ["Platforms", "MT4 · MT5 · cTrader"]],
+      metrics: [["Win rate", "58.9%", "last 12 mo"], ["Profit factor", "1.84", "net of costs"], ["Max drawdown", "13.4%", "peak-to-trough"]],
+      curve: [19, 0.0034, 0.013], months: ["Oct", "Dec", "Feb", "Apr", "Jun", "Aug", "Oct"],
+      notes: [
+        ["Fewer trades, bigger moves", "On average US30 moves more points per session than almost any other index. The engine waits for a confirmed break instead of guessing the open."],
+        ["Pairs well with gold", "US30 and XAUUSD trades have shown low correlation, so running both has smoothed the combined equity curve."],
+      ],
+    },
+    {
+      id: "de40", sym: "DE40", name: "DE40 Open Range", short: "DE", sub: "German 40 · DAX",
+      flag: ["gem", "Underrated"], color: "#2bd98a", grad: "linear-gradient(160deg,#b6f5d8,#2bd98a)",
+      tag: "The index most people overlook",
+      desc: "Most retail traders stick to the US indices. They miss the DAX, which opens at 08:00 Frankfurt time with sharp, clean, repeatable moves while New York is asleep. That first-hour range is one of the most consistent structures we've measured, and our quietest engine has quietly turned in the best risk-adjusted numbers in the Helios lineup.",
+      badges: ["Frankfurt open", "Range expansion", "Low correlation", "Asian-hours friendly"],
+      specs: [["Strategy type", "Opening-range expansion"], ["Sessions", "Frankfurt open (07:00–10:00 UTC)"], ["Avg trades / week", "3 – 5"], ["Stop loss", "Range-based, hard SL"], ["Martingale / grid", "None", "good"], ["Min. account", "$1,000"], ["Platforms", "MT4 · MT5 · cTrader"]],
+      metrics: [["Win rate", "63.5%", "last 12 mo"], ["Profit factor", "2.21", "best in lineup"], ["Max drawdown", "8.9%", "lowest in lineup"]],
+      curve: [33, 0.0031, 0.008], months: ["Oct", "Dec", "Feb", "Apr", "Jun", "Aug", "Oct"],
+      notes: [
+        ["Why it's underrated", "Fewer people trade it, so it's less crowded. DAX opening ranges tend to be clean, and the session ends before US volatility arrives, so drawdowns stay shallow."],
+        ["Perfect for India & Asia timezones", "The Frankfurt open falls around 12:30 IST, which suits traders who want to check on trades in daylight."],
+      ],
+    },
+    {
+      id: "btc", sym: "BTCUSD", name: "BTC Trend", short: "₿", sub: "Bitcoin · 24/7",
+      color: "#ff9f43", grad: "linear-gradient(160deg,#ffd5a8,#ff9f43)",
+      tag: "Crypto · runs around the clock",
+      desc: "A trend-following engine for a market that never sleeps. BTC Trend uses volatility regimes to tell trending conditions from choppy ones. It sizes up in clean trends, steps aside in chop, and flattens before weekend liquidity dries up.",
+      badges: ["Regime detection", "Volatility sizing", "Weekend flat", "Spot or perps"],
+      specs: [["Strategy type", "Swing trend-following"], ["Sessions", "24/7 with regime filter"], ["Avg trades / week", "2 – 4"], ["Stop loss", "Volatility-adjusted, hard SL"], ["Leverage", "1× – 3× max", "good"], ["Min. account", "$1,000"], ["Platforms", "MT5 · Binance · Bybit API"]],
+      metrics: [["Win rate", "46.8%", "trend-style"], ["Profit factor", "1.97", "net of fees"], ["Max drawdown", "17.6%", "peak-to-trough"]],
+      curve: [57, 0.0045, 0.019], months: ["Oct", "Dec", "Feb", "Apr", "Jun", "Aug", "Oct"],
+      notes: [
+        ["Lower win rate, by design", "Trend systems lose often but small, and win less often but big. The average winner is about 2.8× the average loser."],
+        ["Exchange API access", "Trade-only API keys with withdrawals disabled. Your coins never leave your exchange account."],
+      ],
+    },
+  ];
+
+  const tabsEl = $("#botTabs"), panesEl = $("#botPanes");
+  tabsEl.innerHTML = BOTS.map((b, i) => `
+    <button class="tab${i === 0 ? " on" : ""}" role="tab" data-bot="${b.id}" aria-selected="${i === 0}">
+      <span class="tab-ic" ${i === 0 ? `style="background:${b.grad}"` : ""}>${b.short}</span>
+      <span class="tab-tx"><b>${b.sym}</b><span>${b.sub}</span></span>
+      ${b.flag ? `<span class="flag ${b.flag[0]}">${b.flag[1]}</span>` : ""}
+    </button>`).join("");
+
+  const check = '<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="COL" stroke-opacity=".5"/><path d="M6.5 10.3l2.3 2.3 4.7-4.9" stroke="COL" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  panesEl.innerHTML = BOTS.map((b, i) => `
+    <div class="pane${i === 0 ? " on" : ""}" id="pane-${b.id}" role="tabpanel">
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="glow" style="background:radial-gradient(circle,${b.color}33,transparent 65%)"></div>
+            <div class="bot-tag" style="color:${b.color}"><span style="width:6px;height:6px;border-radius:50%;background:${b.color}"></span>${b.tag}</div>
+            <h3 class="bot-name">${b.name}</h3>
+            <p class="bot-desc">${b.desc}</p>
+            <div class="badges">${b.badges.map((x) => `<span class="badge">${x}</span>`).join("")}</div>
+          </div>
+          <div class="equity">
+            <div class="equity-top"><b>Live equity · 12 months</b><span id="ret-${b.id}"></span></div>
+            <svg class="spark" id="spark-${b.id}" viewBox="0 0 600 132" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="equity-axis">${b.months.map((m) => `<span>${m}</span>`).join("")}</div>
+          <div class="metrics">${b.metrics.map(([k, v, s]) => `<div class="metric"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("")}</div>
+        </div>
+        <div class="pane-side">
+          <div class="card">
+            <div class="spec-body">${b.specs.map(([k, v, c]) => `<div class="spec-row"><span class="k">${k}</span><span class="v ${c || ""}">${v}</span></div>`).join("")}</div>
+            <div class="pane-actions">
+              <a href="#pricing" class="btn btn-gold btn-sm">Copy this engine</a>
+              <a href="#contact" class="btn btn-ghost btn-sm" data-market="${b.sym}">Ask a question</a>
+              <span class="price-chip">or <b>$100</b>/mo licence</span>
+            </div>
+          </div>
+          ${b.notes.map(([t, p]) => `<div class="card note">${check.replace(/COL/g, b.color)}<div><b>${t}</b><p>${p}</p></div></div>`).join("")}
+        </div>
+      </div>
+    </div>`).join("");
+
+  function drawSpark(b) {
+    const svg = $("#spark-" + b.id); if (!svg || svg.dataset.done) return;
+    const d = curve(b.curve[0], 120, b.curve[1], b.curve[2]);
+    const min = Math.min(...d), max = Math.max(...d), W = 600, H = 132;
+    const pts = d.map((v, i) => [(i / (d.length - 1)) * W, 8 + (1 - (v - min) / (max - min)) * (H - 16)]);
+    const line = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+    const gid = "g" + b.id;
+    svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${b.color}" stop-opacity=".28"/><stop offset="1" stop-color="${b.color}" stop-opacity="0"/></linearGradient></defs>
+      ${[0.25, 0.5, 0.75].map((g) => `<line x1="0" x2="${W}" y1="${H * g}" y2="${H * g}" stroke="rgba(255,255,255,.05)" vector-effect="non-scaling-stroke"/>`).join("")}
+      <path d="${line} L${W} ${H} L0 ${H}Z" fill="url(#${gid})"/>
+      <path class="ln" d="${line}" fill="none" stroke="${b.color}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;
+    const ln = $(".ln", svg); const L = ln.getTotalLength();
+    ln.style.strokeDasharray = L; ln.style.strokeDashoffset = L;
+    ln.getBoundingClientRect(); ln.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.22,.61,.36,1)"; ln.style.strokeDashoffset = 0;
+    const ret = (d[d.length - 1] / d[0] - 1) * 100;
+    $("#ret-" + b.id).innerHTML = `<span style="color:var(--up)">+${ret.toFixed(1)}%</span> net of costs`;
+    svg.dataset.done = 1;
+  }
+
+  function selectBot(id) {
+    const b = BOTS.find((x) => x.id === id); if (!b) return;
+    $$(".tab", tabsEl).forEach((t) => {
+      const on = t.dataset.bot === id; const bb = BOTS.find((x) => x.id === t.dataset.bot);
+      t.classList.toggle("on", on); t.setAttribute("aria-selected", on);
+      $(".tab-ic", t).style.background = on ? bb.grad : "";
+    });
+    $$(".pane", panesEl).forEach((p) => p.classList.toggle("on", p.id === "pane-" + id));
+    drawSpark(b);
+  }
+  $$(".tab", tabsEl).forEach((t) => t.addEventListener("click", () => selectBot(t.dataset.bot)));
+  tabsEl.addEventListener("keydown", (e) => {
+    if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+    const tabs = $$(".tab", tabsEl); let i = tabs.findIndex((t) => t.classList.contains("on"));
+    i = (i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length; tabs[i].focus(); selectBot(tabs[i].dataset.bot);
+  });
+  $$("[data-goto]").forEach((a) => a.addEventListener("click", () => selectBot(a.dataset.goto)));
+  // draw first spark when visible
+  new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { drawSpark(BOTS[0]); o.disconnect(); } }, { threshold: 0.2 }).observe(panesEl);
+
+  /* ---------------- LIBRARY ---------------- */
+  const LIBRARY = [
+    ["Forex", "EURUSD · GBPUSD Carry-Swing", "Swing engine for the major pairs that combines rate differentials with the weekly trend.", "#4c9dff", "FX", ["PF 1.71", "DD 9.2%"]],
+    ["Forex", "GBPJPY Volatility", "Trades the London session on the most volatile cross pair, using adaptive stops.", "#4c9dff", "FX", ["PF 1.66", "DD 14.1%"]],
+    ["Stocks", "NAS100 & US Equities", "Gap-and-go and earnings-drift models for the Nasdaq 100 and large-cap US stocks.", "#9a92ff", "EQ", ["PF 1.79", "DD 12.7%"]],
+    ["Commodities", "WTI Crude Inventory", "Positions around the weekly EIA inventory report, with strict pre-release risk caps.", "#ff9f43", "OIL", ["PF 1.62", "DD 13.5%"]],
+    ["Commodities", "XAGUSD Silver Follower", "Trades silver only when it lags gold, using the Gold Engine's signals as confirmation.", "#c9d1dc", "Ag", ["PF 1.74", "DD 12.0%"]],
+    ["Crypto", "ETH & Alt Rotation", "Rotates between ETH, SOL and the large caps based on relative strength and funding rates.", "#ff9f43", "ETH", ["PF 1.69", "DD 21.3%"]],
+  ];
+  $("#marketGrid").innerHTML = LIBRARY.map(([cat, n, d, c, ic, chips], i) => `
+    <div class="rev reveal${i % 3 ? " d" + (i % 3) : ""}">
+      <div class="rev-top">
+        <span class="av" style="background:${c}22;color:${c};border-radius:11px;font-size:11px">${ic}</span>
+        <div class="rev-who"><b>${n}</b><span>${cat}</span></div>
+      </div>
+      <p>${d}</p>
+      <div class="rev-meta">${chips.map((x) => `<span class="chip">${x}</span>`).join("")}<span class="chip gold">In licence</span></div>
+    </div>`).join("");
+
+  /* ---------------- CALCULATOR ---------------- */
+  const cBal = $("#cBal"), cBalR = $("#cBalR"), cRetR = $("#cRetR");
+  function calc() {
+    const bal = Math.max(0, +cBal.value || 0), r = +cRetR.value / 100;
+    const gross = bal * r, fee = gross > 0 ? gross * 0.3 : 0, net = gross - fee, lic = gross - 100;
+    $("#cBalOut").textContent = money(bal); $("#cRetOut").textContent = (+cRetR.value).toFixed(1) + "%";
+    $("#cGross").textContent = money(gross); $("#cGross").style.color = gross < 0 ? "var(--down)" : "";
+    $("#cFee").textContent = money(fee);
+    $("#cNet").textContent = money(net); $("#cNet").style.color = net < 0 ? "var(--down)" : "var(--up)";
+    $("#cLic").textContent = money(lic); $("#cLic").style.color = lic < 0 ? "var(--down)" : "var(--text-2)";
+    const youW = gross > 0 ? 70 : 100;
+    $("#sbYou").style.width = youW + "%"; $("#sbUs").style.width = 100 - youW + "%";
+    $("#sbYou").textContent = gross > 0 ? "YOU 70%" : "LOSING MONTH · YOU PAY $0";
+    $("#sbUs").textContent = gross > 0 ? "HELIOS 30%" : "";
+    const tx = $("#cHintTx");
+    if (gross <= 0) tx.textContent = "Losing month: copy trading costs nothing, while the licence still costs $100. The next performance fee only applies once the account passes its previous high.";
+    else if (net > lic) tx.textContent = `At this size, copy trading leaves you ${money(net - lic)} better off than the licence this month, without you running anything yourself.`;
+    else tx.textContent = `At this account size the licence would leave you ${money(lic - net)} more, but you'd need to run and watch the software yourself.`;
+  }
+  cBal.addEventListener("input", () => { cBalR.value = Math.min(100000, Math.max(200, +cBal.value || 0)); calc(); });
+  cBalR.addEventListener("input", () => { cBal.value = cBalR.value; calc(); });
+  cRetR.addEventListener("input", calc); calc();
+
+  /* ---------------- REVIEWS ----------------
+     SAMPLE PLACEHOLDERS — replace with real, verifiable client reviews before going live. */
+  const REVIEWS = [
+    { n: "Rohan Mehta", loc: "Mumbai, IN", t: "copy", bot: "XAUUSD", m: "8 mo", s: 5, c: "#f5b13d", tx: "I'd blown two accounts trading gold manually. With copy trading I just check the app at night. Some weeks are red, but the drawdowns have been smaller than they ever were when I traded myself. Paying only on profit is what convinced me." },
+    { n: "Daniel Okafor", loc: "London, UK", t: "licence", bot: "DE40", m: "1 yr", s: 5, c: "#2bd98a", tx: "I signed up for the gold bot, but the DAX engine is the one I'd keep if I had to choose. It's done by mid-morning, with clean entries and shallow drawdowns. I'm surprised more people don't run it." },
+    { n: "Aisha Rahman", loc: "Dubai, UAE", t: "copy", bot: "Portfolio", m: "5 mo", s: 5, c: "#4c9dff", tx: "Onboarding took about 20 minutes on a call. They explained exactly what access they get: trades only, no withdrawals. Monthly statements are clear and the high-water mark is honoured." },
+    { n: "Marcus Lindqvist", loc: "Stockholm, SE", t: "licence", bot: "US30", m: "7 mo", s: 4, c: "#9a92ff", tx: "Solid NY open logic. I knocked off one star because the first setup on my broker needed a symbol-suffix tweak, though support sorted it within an hour on Telegram. It's been running without issues since." },
+    { n: "Priya Nair", loc: "Bengaluru, IN", t: "copy", bot: "XAUUSD", m: "11 mo", s: 5, c: "#ff9f43", tx: "I'm a doctor and don't have time to watch charts. The fact that there's no upfront fee mattered to me. I started small, saw three months of statements, then added more capital." },
+    { n: "James Whitfield", loc: "Sydney, AU", t: "licence", bot: "BTCUSD", m: "6 mo", s: 4, c: "#ff5c6c", tx: "The BTC engine loses more trades than it wins, and that took some getting used to, but the winners are big. Running it on Bybit with trade-only keys. I'd like more alt pairs, which apparently are on the way." },
+    { n: "Karan Malhotra", loc: "Delhi, IN", t: "copy", bot: "DE40 + XAU", m: "4 mo", s: 5, c: "#2bd98a", tx: "My account manager put me on gold plus the DAX engine to spread the risk. The DAX trades happen around lunchtime here, so I can actually watch them. It's been the smoothest part of my account." },
+    { n: "Sofia Romano", loc: "Milan, IT", t: "licence", bot: "XAUUSD", m: "1 yr", s: 5, c: "#f5b13d", tx: "Over the years I've tried six or seven gold EAs. Most were grid or martingale systems that worked until they didn't. Helios puts a real stop loss on every trade, and you can read the logic in the docs." },
+    { n: "Tunde Bakare", loc: "Lagos, NG", t: "copy", bot: "US30", m: "3 mo", s: 4, c: "#4c9dff", tx: "Still early days, with one flat month and two good ones. I like that I didn't pay anything during the flat month. They respond quickly on WhatsApp." },
+  ];
+  const PER = window.innerWidth < 720 ? 1 : window.innerWidth < 1040 ? 2 : 3;
+  let revFilter = "all", revPage = 0;
+  const star = (on) => `<svg viewBox="0 0 20 20"><path d="M10 1.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L10 14.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z" fill="${on ? "#f5b13d" : "#2a313c"}"/></svg>`;
+  $("#sumStars").innerHTML = [1, 1, 1, 1, 1].map(() => star(1)).join("");
+  $("#revBars").innerHTML = [[5, 84], [4, 12], [3, 3], [2, 1], [1, 0]].map(([s, p]) =>
+    `<div class="bar-row"><span>${s}★</span><div class="track"><div class="fill" data-w="${p}%"></div></div><span style="width:28px;text-align:right">${p}%</span></div>`).join("");
+  $("#revBars").closest(".reveal") && io.observe($("#revBars").closest(".reveal"));
+
+  function renderReviews() {
+    const list = REVIEWS.filter((r) => revFilter === "all" || r.t === revFilter);
+    const pages = Math.ceil(list.length / PER); revPage = (revPage + pages) % pages;
+    const slice = list.slice(revPage * PER, revPage * PER + PER);
+    $("#revGrid").innerHTML = slice.map((r) => `
+      <article class="rev" style="animation:fade .45s var(--ease)">
+        <div class="rev-top">
+          <span class="av" style="background:${r.c}">${r.n.split(" ").map((w) => w[0]).join("")}</span>
+          <div class="rev-who"><b>${r.n}</b><span>${r.loc}</span></div>
+          <span class="verified"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.2 2.2 4.8-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Client</span>
+        </div>
+        <div class="stars">${[1, 2, 3, 4, 5].map((i) => star(i <= r.s)).join("")}</div>
+        <p>“${r.tx}”</p>
+        <div class="rev-meta">
+          <span class="chip gold">${r.t === "copy" ? "Copy trading" : "Licence"}</span>
+          <span class="chip"><b>${r.bot}</b></span>
+          <span class="chip">Client ${r.m}</span>
+        </div>
+      </article>`).join("");
+    $("#revDots").innerHTML = Array.from({ length: pages }, (_, i) => `<i class="${i === revPage ? "on" : ""}" data-p="${i}"></i>`).join("");
+    $$("#revDots i").forEach((d) => d.addEventListener("click", () => { revPage = +d.dataset.p; renderReviews(); resetAuto(); }));
+  }
+  $("#revPrev").addEventListener("click", () => { revPage--; renderReviews(); resetAuto(); });
+  $("#revNext").addEventListener("click", () => { revPage++; renderReviews(); resetAuto(); });
+  $$("#revFilter button").forEach((b) => b.addEventListener("click", () => {
+    $$("#revFilter button").forEach((x) => x.classList.remove("on")); b.classList.add("on");
+    revFilter = b.dataset.f; revPage = 0; renderReviews(); resetAuto();
+  }));
+  let auto; const resetAuto = () => { clearInterval(auto); auto = setInterval(() => { revPage++; renderReviews(); }, 8000); };
+  $("#revGrid").addEventListener("mouseenter", () => clearInterval(auto));
+  $("#revGrid").addEventListener("mouseleave", resetAuto);
+  renderReviews(); resetAuto();
+
+  /* ---------------- FAQ ---------------- */
+  const FAQ = [
+    ["Which option should I pick, the licence or copy trading?", "For most individuals, <b>copy trading</b> is the better fit. There's nothing to pay upfront, nothing to install, and you only pay when we make you money. The <b>$100 licence</b> makes more sense if you're experienced, have a larger account, want to adjust the settings yourself and are comfortable running a VPS."],
+    ["How exactly is the 30% profit split calculated?", "At the end of each month we compare your account equity with its <b>high-water mark</b>, which is the highest value it has closed at before. You only pay 30% of the profit above that mark. Deposits and withdrawals are excluded. If you lose money in a month, you pay nothing, and the account has to get back above its previous high before any new fee applies."],
+    ["Can Helios withdraw money from my account?", "No. Your funds stay with your broker or exchange, in your own name. For copy trading we use trade-only access, either a PAMM/MAM setup or trade-only API keys with <b>withdrawals disabled</b>. We'll never ask for your broker login password."],
+    ["Which brokers and platforms are supported?", "The forex, gold and index engines run on <b>MT4, MT5 and cTrader</b> with most regulated brokers. Crypto runs on MT5 CFDs or directly through the <b>Binance and Bybit</b> APIs. We recommend EC Markets first and Vantage second. If you use another broker, tell us and we'll confirm it works before you pay anything."],
+    ["Do the bots use martingale or grid strategies?", "No. Every Helios engine puts a <b>hard stop loss on every trade</b> and risks a fixed percentage of the account. We don't add to losing positions, and we don't use grids or martingale. Those systems often look smooth until one bad week wipes the account out."],
+    ["Why do you say DE40 is underrated?", "Most retail flow goes into US indices. The DAX opens at 08:00 Frankfurt time with a clean, repeatable opening range, and the session finishes before US volatility arrives. Our DE40 engine has the <b>lowest drawdown and the highest profit factor</b> in the lineup, and few people trade it."],
+    ["What's the minimum account size?", "<b>Gold (XAUUSD) starts at just $500.</b> It's our most popular algorithm and the usual way people get started. DE40 and BTC start at <b>$1,000</b>, US30 at <b>$1,500</b>, and the full diversified portfolio works best from <b>$2,000+</b>."],
+    ["I only have $200–$500. Can I still join?", "Yes, and you're very welcome. Most of our clients started small. With <b>$200+</b> we can set you up for copy trading on a cent or micro-lot account, with position sizes scaled for a small balance. At <b>$500</b> you can run the Gold Engine. You still pay <b>nothing upfront</b>. Message the team on <a href='https://api.whatsapp.com/send?phone=918349329096' target='_blank' rel='noopener' style='color:#25d366'>WhatsApp (+91 83493 29096)</a> and we'll walk you through it."],
+    ["Which broker should I use?", "We recommend <b>EC Markets</b> as the best broker for Helios algo trading, with <b>Vantage</b> as a strong alternative. Open your account with our link and referral code in the <a href='#brokers' style='color:var(--gold)'>Brokers section</a>, then message us to start copy trading."],
+    ["Can I cancel anytime?", "Yes. You can cancel the licence before your next billing date. For copy trading, revoke our access or tell us to stop. You only owe the profit share for the period that's already passed, and there are no exit fees or lock-ins."],
+  ];
+  $("#faqList").innerHTML = FAQ.map(([q, a]) => `
+    <div class="faq-item"><button class="faq-q" aria-expanded="false"><span>${q}</span><span class="faq-ic"></span></button>
+    <div class="faq-a"><div>${a}</div></div></div>`).join("");
+  $$(".faq-item").forEach((it) => {
+    const q = $(".faq-q", it), a = $(".faq-a", it);
+    q.addEventListener("click", () => {
+      const open = it.classList.contains("open");
+      $$(".faq-item.open").forEach((o) => { o.classList.remove("open"); $(".faq-a", o).style.maxHeight = 0; $(".faq-q", o).setAttribute("aria-expanded", "false"); });
+      if (!open) { it.classList.add("open"); a.style.maxHeight = a.scrollHeight + "px"; q.setAttribute("aria-expanded", "true"); }
+    });
+  });
+
+  /* ---------------- CONTACT ---------------- */
+  $$("[data-plan]").forEach((b) => b.addEventListener("click", () => { $("#fPlan").value = b.dataset.plan; }));
+  $$("[data-market]").forEach((b) => b.addEventListener("click", () => {
+    const m = b.dataset.market; const opt = $$("#fMarket option").find((o) => o.textContent.startsWith(m.replace("BTCUSD", "BTCUSD")));
+    if (opt) $("#fMarket").value = opt.value;
+  }));
+  const toast = (msg) => { $("#toastTx").textContent = msg; $("#toast").classList.add("show"); setTimeout(() => $("#toast").classList.remove("show"), 3600); };
+  $("#leadForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#fName").value.trim(), email = $("#fEmail").value.trim();
+    [$("#fName"), $("#fEmail")].forEach((f) => (f.style.borderColor = ""));
+    if (!name) { $("#fName").style.borderColor = "var(--down)"; $("#fName").focus(); return toast("Please add your name"); }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { $("#fEmail").style.borderColor = "var(--down)"; $("#fEmail").focus(); return toast("Please enter a valid email"); }
+    // OWNER: connect to Formspree / your backend / Telegram bot here.
+    e.target.reset(); toast(`Thanks ${name.split(" ")[0]}. We'll be in touch shortly.`);
+  });
+
+  $$("[data-copy]").forEach((b) => b.addEventListener("click", () => {
+    const code = b.dataset.copy, done = () => { b.classList.add("done"); b.lastChild.textContent = "Copied"; toast("Referral code " + code + " copied"); setTimeout(() => { b.classList.remove("done"); b.lastChild.textContent = "Copy"; }, 2200); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
+    else { const t = document.createElement("textarea"); t.value = code; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove(); done(); }
+  }));
+  // Open WhatsApp / Telegram / mail / phone reliably (also from inside embedded previews)
+  $$('a[href^="https://api.whatsapp.com"], a[href^="https://t.me"], a[href^="https://ib.ecmarkets.com"], a[href^="https://vigco.co"]').forEach((a) => {
+    a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener");
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const url = a.href; let w = null;
+      try { w = window.open(url, "_blank"); if (w) w.opener = null; } catch (err) {}
+      if (!w) { try { window.top.location.href = url; } catch (err) { window.location.href = url; } }
+    });
+  });
+  $("#yr").textContent = new Date().getFullYear();
+  observe();
+})();
+
+</script>
+</body>
+</html>
